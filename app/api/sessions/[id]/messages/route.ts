@@ -144,7 +144,6 @@ export async function POST(
 
           // Update progress
           const updatedProgress = await progressTracker.updateProgress(
-            sessionId,
             updatedSpecification
           );
 
