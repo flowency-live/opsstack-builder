@@ -8,6 +8,7 @@ export interface ChatInterfaceProps {
   onMessageSent: (message: string) => void;
   messages: Message[];
   isStreaming: boolean;
+  onOpenSpec?: () => void;
 }
 
 export default function ChatInterface({
@@ -15,6 +16,7 @@ export default function ChatInterface({
   onMessageSent,
   messages,
   isStreaming,
+  onOpenSpec,
 }: ChatInterfaceProps) {
   const [inputValue, setInputValue] = useState('');
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -62,6 +64,28 @@ export default function ChatInterface({
           </h1>
         </div>
         <div className="flex items-center space-x-2">
+          {onOpenSpec && (
+            <button
+              onClick={onOpenSpec}
+              className="px-3 py-1.5 text-sm text-[var(--color-primary)] hover:text-[var(--color-primary-dark)] transition-colors rounded-[var(--radius-md)] hover:bg-[var(--color-surface-elevated)] flex items-center gap-2"
+              title="View specification"
+            >
+              <svg
+                className="w-5 h-5"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                />
+              </svg>
+              <span className="hidden sm:inline">View Spec</span>
+            </button>
+          )}
           <button
             onClick={handleMagicLink}
             className="px-3 py-1.5 text-sm text-[var(--color-muted)] hover:text-[var(--color-primary)] transition-colors rounded-[var(--radius-md)] hover:bg-[var(--color-surface-elevated)]"
