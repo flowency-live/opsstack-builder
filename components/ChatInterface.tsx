@@ -60,7 +60,7 @@ export default function ChatInterface({
         <div className="flex items-center space-x-3">
           <div className="w-2 h-2 rounded-full bg-[var(--color-success)] animate-pulse" />
           <h1 className="text-lg font-semibold text-[var(--color-foreground)]">
-            Specification Wizard
+            Flowency Build
           </h1>
         </div>
         <div className="flex items-center space-x-2">

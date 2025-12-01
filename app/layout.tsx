@@ -13,8 +13,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Specification Wizard | Build Your Product Spec in Minutes",
-  description: "AI-powered specification wizard that guides you through creating comprehensive product requirements for your software project. Fast, conversational, and secure.",
+  title: "Flowency Build | Build Your Product Spec in Minutes",
+  description: "AI-powered Flowency Build that guides you through creating comprehensive product requirements for your software project. Fast, conversational, and secure.",
 };
 
 export default function RootLayout({

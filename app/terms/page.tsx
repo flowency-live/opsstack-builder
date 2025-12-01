@@ -40,7 +40,7 @@ export default function TermsOfService() {
                 1. Acceptance of Terms
               </h2>
               <p>
-                By accessing and using the Specification Wizard, you accept and agree to be bound 
+                By accessing and using the Flowency Build, you accept and agree to be bound 
                 by the terms and provision of this agreement.
               </p>
             </section>
@@ -79,7 +79,7 @@ export default function TermsOfService() {
                 3. Service Description
               </h2>
               <p>
-                The Specification Wizard is an AI-powered tool designed to help you create 
+                The Flowency Build is an AI-powered tool designed to help you create 
                 product specifications. While we strive for accuracy, the generated specifications 
                 should be reviewed and validated before use in production environments.
               </p>
