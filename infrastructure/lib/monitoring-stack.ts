@@ -154,8 +154,19 @@ export class MonitoringStack extends cdk.Stack {
       new cloudwatch.GraphWidget({
         title: 'DynamoDB Latency',
         left: [
-          dynamoDBTable.metricSuccessfulRequestLatency({
+          dynamoDBTable.metric('SuccessfulRequestLatency', {
             statistic: 'Average',
+            dimensionsMap: {
+              TableName: dynamoDBTable.tableName,
+              Operation: 'GetItem',
+            },
+          }),
+          dynamoDBTable.metric('SuccessfulRequestLatency', {
+            statistic: 'Average',
+            dimensionsMap: {
+              TableName: dynamoDBTable.tableName,
+              Operation: 'PutItem',
+            },
           }),
         ],
         width: 12,

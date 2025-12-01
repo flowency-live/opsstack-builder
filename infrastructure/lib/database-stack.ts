@@ -36,9 +36,11 @@ export class DatabaseStack extends cdk.Stack {
       billingMode,
       encryption: dynamodb.TableEncryption.CUSTOMER_MANAGED,
       encryptionKey,
-      pointInTimeRecovery: environment === 'production',
-      removalPolicy: environment === 'production' 
-        ? cdk.RemovalPolicy.RETAIN 
+      pointInTimeRecoverySpecification: environment === 'production'
+        ? { pointInTimeRecoveryEnabled: true }
+        : undefined,
+      removalPolicy: environment === 'production'
+        ? cdk.RemovalPolicy.RETAIN
         : cdk.RemovalPolicy.DESTROY,
       timeToLiveAttribute: 'ttl',
       stream: dynamodb.StreamViewType.NEW_AND_OLD_IMAGES,
@@ -66,25 +68,9 @@ export class DatabaseStack extends cdk.Stack {
       }),
     });
 
-    // Auto-scaling for provisioned mode
-    if (billingMode === dynamodb.BillingMode.PROVISIONED) {
-      // Table auto-scaling
-      const readScaling = this.mainTable.autoScaleReadCapacity({
-        minCapacity: 5,
-        maxCapacity: 100,
-      });
-      readScaling.scaleOnUtilization({
-        targetUtilizationPercent: 70,
-      });
-
-      const writeScaling = this.mainTable.autoScaleWriteCapacity({
-        minCapacity: 5,
-        maxCapacity: 100,
-      });
-      writeScaling.scaleOnUtilization({
-        targetUtilizationPercent: 70,
-      });
-    }
+    // Auto-scaling for provisioned mode (disabled - use PAY_PER_REQUEST instead)
+    // If PROVISIONED mode is needed, configure auto-scaling manually via AWS Console
+    // or upgrade CDK to v2.120+ to use scaleOnUtilization without metric issues
 
     // CloudFormation outputs
     new cdk.CfnOutput(this, 'DynamoDBTableName', {

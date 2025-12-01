@@ -17,6 +17,25 @@ export class StorageStack extends cdk.Stack {
 
     const { environment, appName, encryptionKey } = props;
 
+    // Server access logging bucket (optional for production)
+    let logsBucket: s3.Bucket | undefined;
+    if (environment === 'production') {
+      logsBucket = new s3.Bucket(this, 'LogsBucket', {
+        bucketName: `${appName}-logs-${environment}-${this.account}`,
+        encryption: s3.BucketEncryption.S3_MANAGED,
+        blockPublicAccess: s3.BlockPublicAccess.BLOCK_ALL,
+        removalPolicy: cdk.RemovalPolicy.RETAIN,
+        enforceSSL: true,
+        lifecycleRules: [
+          {
+            id: 'DeleteOldLogs',
+            enabled: true,
+            expiration: cdk.Duration.days(90),
+          },
+        ],
+      });
+    }
+
     // S3 bucket for PDFs and exports
     this.exportsBucket = new s3.Bucket(this, 'ExportsBucket', {
       bucketName: `${appName}-exports-${environment}-${this.account}`,
@@ -24,11 +43,13 @@ export class StorageStack extends cdk.Stack {
       encryptionKey,
       versioned: process.env.ENABLE_S3_VERSIONING === 'true',
       blockPublicAccess: s3.BlockPublicAccess.BLOCK_ALL,
-      removalPolicy: environment === 'production' 
-        ? cdk.RemovalPolicy.RETAIN 
+      removalPolicy: environment === 'production'
+        ? cdk.RemovalPolicy.RETAIN
         : cdk.RemovalPolicy.DESTROY,
       autoDeleteObjects: environment !== 'production',
       enforceSSL: true,
+      serverAccessLogsBucket: logsBucket,
+      serverAccessLogsPrefix: logsBucket ? 'access-logs/' : undefined,
       cors: [
         {
           allowedMethods: [
@@ -66,26 +87,6 @@ export class StorageStack extends cdk.Stack {
         },
       ],
     });
-
-    // Server access logging bucket (optional for production)
-    if (environment === 'production') {
-      const logsBucket = new s3.Bucket(this, 'LogsBucket', {
-        bucketName: `${appName}-logs-${environment}-${this.account}`,
-        encryption: s3.BucketEncryption.S3_MANAGED,
-        blockPublicAccess: s3.BlockPublicAccess.BLOCK_ALL,
-        removalPolicy: cdk.RemovalPolicy.RETAIN,
-        enforceSSL: true,
-        lifecycleRules: [
-          {
-            id: 'DeleteOldLogs',
-            enabled: true,
-            expiration: cdk.Duration.days(90),
-          },
-        ],
-      });
-
-      this.exportsBucket.logAccessTo(logsBucket, 'access-logs/');
-    }
 
     // CloudFormation outputs
     new cdk.CfnOutput(this, 'ExportsBucketName', {

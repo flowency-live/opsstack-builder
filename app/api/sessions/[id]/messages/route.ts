@@ -22,12 +22,12 @@ const progressTracker = new ProgressTracker();
 
 export async function POST(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   const startTime = Date.now();
-  
+
   try {
-    const sessionId = params.id;
+    const { id: sessionId } = await params;
     const body = await request.json();
     const { message: userMessageContent } = body;
 
@@ -189,8 +189,9 @@ export async function POST(
 
     // Preserve error state
     try {
+      const { id } = await params;
       await sessionManager.preserveErrorState(
-        params.id,
+        id,
         error as Error
       );
     } catch (preserveError) {

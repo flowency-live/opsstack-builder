@@ -1,0 +1,43 @@
+{
+  "fbuilder-SecurityStack-dev": {
+    "DynamoDBEncryptionKeyId": "81df3d8c-60d9-42b5-8fd9-faea80133f6c",
+    "APIKeySecretArn": "arn:aws:secretsmanager:eu-west-2:771551874768:secret:fbuilder/api-keys/dev-x8hNLM",
+    "LambdaExecutionRoleArn": "arn:aws:iam::771551874768:role/fbuilder-lambda-execution-dev",
+    "ExportsOutputFnGetAttDynamoDBEncryptionKey74BF4528Arn568D2F81": "arn:aws:kms:eu-west-2:771551874768:key/81df3d8c-60d9-42b5-8fd9-faea80133f6c",
+    "ExportsOutputFnGetAttLambdaExecutionRoleD5C26073ArnADAF6607": "arn:aws:iam::771551874768:role/fbuilder-lambda-execution-dev",
+    "ExportsOutputFnGetAttS3EncryptionKeyE102C1CFArn8D8FC4ED": "arn:aws:kms:eu-west-2:771551874768:key/c56ce121-b584-47d8-8294-080e75f36330",
+    "S3EncryptionKeyId": "c56ce121-b584-47d8-8294-080e75f36330"
+  },
+  "fbuilder-EmailStack-dev": {
+    "ComplaintTopicArn": "arn:aws:sns:eu-west-2:771551874768:fbuilder-ses-complaints-dev",
+    "BounceTopicArn": "arn:aws:sns:eu-west-2:771551874768:fbuilder-ses-bounces-dev",
+    "SESConfigurationSet": "fbuilder-dev",
+    "SESFromEmail": "noreply@flowency.build"
+  },
+  "fbuilder-DatabaseStack-dev": {
+    "DynamoDBTableArn": "arn:aws:dynamodb:eu-west-2:771551874768:table/fbuilder-sessions-dev",
+    "DynamoDBStreamArn": "arn:aws:dynamodb:eu-west-2:771551874768:table/fbuilder-sessions-dev/stream/2025-12-01T20:45:46.166",
+    "DynamoDBTableName": "fbuilder-sessions-dev",
+    "ExportsOutputRefMainTable74195DAB4503BD7E": "fbuilder-sessions-dev"
+  },
+  "fbuilder-StorageStack-dev": {
+    "ExportsOutputRefExportsBucket5A12738B671B903D": "fbuilder-exports-dev-771551874768",
+    "ExportsBucketDomainName": "fbuilder-exports-dev-771551874768.s3.amazonaws.com",
+    "ExportsBucketArn": "arn:aws:s3:::fbuilder-exports-dev-771551874768",
+    "ExportsBucketName": "fbuilder-exports-dev-771551874768"
+  },
+  "fbuilder-APIGatewayStack-dev": {
+    "ExportsOutputRefWebSocketAPI23F1E4ED": "b4y71ud73k",
+    "WebSocketURL": "wss://b4y71ud73k.execute-api.eu-west-2.amazonaws.com/dev",
+    "WebSocketAPIId": "b4y71ud73k"
+  },
+  "fbuilder-CDNStack-dev": {
+    "CloudFrontStatus": "Disabled"
+  },
+  "fbuilder-MonitoringStack-dev": {
+    "ErrorLogGroup": "/aws/fbuilder/dev/errors",
+    "ApplicationLogGroup": "/aws/fbuilder/dev/application",
+    "AlarmTopicArn": "arn:aws:sns:eu-west-2:771551874768:fbuilder-alarms-dev",
+    "DashboardURL": "https://console.aws.amazon.com/cloudwatch/home?region=eu-west-2#dashboards:name=fbuilder-dev"
+  }
+}

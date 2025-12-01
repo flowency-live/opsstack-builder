@@ -18,15 +18,16 @@ const app = new cdk.App();
 // Environment configuration
 const env = {
   account: process.env.AWS_ACCOUNT_ID || process.env.CDK_DEFAULT_ACCOUNT,
-  region: process.env.AWS_REGION || process.env.CDK_DEFAULT_REGION || 'us-east-1',
+  region: process.env.AWS_REGION || process.env.CDK_DEFAULT_REGION || 'eu-west-2',
 };
 
 const environment = process.env.ENVIRONMENT || 'dev';
-const appName = process.env.APP_NAME || 'spec-wizard';
+const appName = process.env.APP_NAME || 'fbuilder';
 
 // Common tags for all resources
 const commonTags = {
-  Project: process.env.PROJECT || 'specification-wizard',
+  Project: process.env.PROJECT || 'FlowencyBuilder',
+  Product: 'FlowencyBuilder',
   Environment: environment,
   Owner: process.env.OWNER || 'engineering-team',
   CostCenter: process.env.COST_CENTER || 'product-development',
