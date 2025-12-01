@@ -11,15 +11,8 @@ import { dynamoDBConfig } from './config';
 // Create DynamoDB client with encryption enabled
 // Note: Encryption at rest is configured at the table level in AWS
 // This client will work with encrypted tables
-const client = new DynamoDBClient({
-  ...dynamoDBConfig,
-  // Ensure TLS 1.3 for data in transit
-  requestHandler: {
-    httpsAgent: {
-      minVersion: 'TLSv1.3',
-    },
-  } as any,
-});
+// TLS 1.2+ is used by default for data in transit
+const client = new DynamoDBClient(dynamoDBConfig);
 
 // Create DynamoDB Document client for easier data manipulation
 export const dynamoDBDocClient = DynamoDBDocumentClient.from(client, {
