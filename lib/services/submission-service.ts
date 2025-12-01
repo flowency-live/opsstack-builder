@@ -9,7 +9,7 @@ import { marshall, unmarshall } from '@aws-sdk/util-dynamodb';
 import type { Submission, ContactInfo, Specification } from '../models/types';
 import { submissionToRecord, recordToSubmission, type SubmissionRecord } from '../models/dynamodb-schema';
 import { SpecificationGenerator } from './specification-generator';
-import { getDynamoDBClient } from '../aws';
+import { dynamoDBClient } from '../aws';
 
 export interface SubmissionInput {
   sessionId: string;
