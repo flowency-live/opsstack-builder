@@ -30,7 +30,7 @@ const llmRouter = new LLMRouter({
 });
 const promptManager = new PromptManager();
 const conversationEngine = new ConversationEngine(llmRouter, promptManager);
-const specificationGenerator = new SpecificationGenerator(llmRouter, promptManager);
+const specificationGenerator = new SpecificationGenerator();
 const progressTracker = new ProgressTracker();
 
 export async function POST(
