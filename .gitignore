@@ -40,3 +40,7 @@ amplify-env-vars.json
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# cdk
+lambda/cdk/cdk.out/
+lambda/dist/
