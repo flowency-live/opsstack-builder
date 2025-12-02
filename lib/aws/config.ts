@@ -7,13 +7,21 @@
 const isLocalStack = process.env.USE_LOCALSTACK === 'true';
 const localStackEndpoint = process.env.LOCALSTACK_ENDPOINT || 'http://localhost:4566';
 
-// Base config - let AWS SDK auto-detect credentials in Amplify/Lambda environment
-// The SDK will automatically check: environment variables, ECS credentials, EC2 metadata
+// Base config with credentials
+// Amplify doesn't allow AWS_* prefix, so we use FBUILDER_AWS_* environment variables
 const baseConfig: any = {
-  region: process.env.AWS_REGION || process.env.REGION || 'us-east-1',
+  region: process.env.AWS_REGION || process.env.REGION || 'eu-west-2',
 };
 
-// Only specify credentials for local development with LocalStack
+// Add credentials if provided (Amplify SSR requires explicit credentials)
+if (process.env.FBUILDER_AWS_ACCESS_KEY_ID && process.env.FBUILDER_AWS_SECRET_ACCESS_KEY) {
+  baseConfig.credentials = {
+    accessKeyId: process.env.FBUILDER_AWS_ACCESS_KEY_ID,
+    secretAccessKey: process.env.FBUILDER_AWS_SECRET_ACCESS_KEY,
+  };
+}
+
+// Override for LocalStack local development
 export const awsConfig = {
   ...baseConfig,
   ...(isLocalStack && {
