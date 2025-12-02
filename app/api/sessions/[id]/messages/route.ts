@@ -4,7 +4,7 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server';
-import { sessionManager } from '@/lib/services/session-manager-postgres';
+import { sessionManager } from '@/lib/services/session-manager';
 import { ConversationEngine } from '@/lib/services/conversation-engine';
 import { LLMRouter } from '@/lib/services/llm-router';
 import { PromptManager } from '@/lib/services/prompt-manager';

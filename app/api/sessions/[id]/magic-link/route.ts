@@ -6,7 +6,7 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server';
-import { sessionManager } from '@/lib/services/session-manager-postgres';
+import { sessionManager } from '@/lib/services/session-manager';
 
 /**
  * POST /api/sessions/[id]/magic-link

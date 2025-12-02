@@ -4,7 +4,7 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server';
-import { sessionManager } from '@/lib/services/session-manager-postgres';
+import { sessionManager } from '@/lib/services/session-manager';
 
 export async function GET(
   request: NextRequest,

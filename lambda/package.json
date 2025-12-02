@@ -1,0 +1,29 @@
+{
+  "name": "flowency-build-lambda",
+  "version": "1.0.0",
+  "description": "Lambda functions for Flowency Build",
+  "scripts": {
+    "build": "tsc && cp -r ../spec-wizard/lib ./dist/",
+    "watch": "tsc -w",
+    "cdk": "cdk",
+    "deploy": "npm run build && cd cdk && cdk deploy --require-approval never",
+    "destroy": "cd cdk && cdk destroy"
+  },
+  "dependencies": {
+    "@aws-sdk/client-dynamodb": "^3.940.0",
+    "@aws-sdk/lib-dynamodb": "^3.940.0",
+    "@anthropic-ai/sdk": "^0.71.0",
+    "openai": "^6.9.1",
+    "uuid": "^13.0.0"
+  },
+  "devDependencies": {
+    "@types/aws-lambda": "^8.10.145",
+    "@types/node": "^20.0.0",
+    "@types/uuid": "^10.0.0",
+    "aws-cdk": "^2.110.0",
+    "aws-cdk-lib": "^2.110.0",
+    "constructs": "^10.0.0",
+    "source-map-support": "^0.5.21",
+    "typescript": "^5.0.0"
+  }
+}
