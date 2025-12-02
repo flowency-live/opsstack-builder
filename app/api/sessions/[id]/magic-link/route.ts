@@ -31,13 +31,19 @@ export async function POST(
     // Generate magic link token
     const token = await sessionManager.generateMagicLink(sessionId);
 
-    // Construct full URL
-    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
-    const url = `${baseUrl}/restore?token=${token}`;
+    // Construct full URLs
+    const baseUrl = process.env.APP_URL || process.env.NEXT_PUBLIC_BASE_URL || 'https://my.flowency.build';
+
+    // Secure token-based URL (expires in 30 days)
+    const tokenUrl = `${baseUrl}/restore?token=${token}`;
+
+    // Simple session ID-based URL (for easy collaboration)
+    const sessionUrl = `${baseUrl}/chat?sessionId=${sessionId}`;
 
     return NextResponse.json({
       token,
-      url,
+      url: tokenUrl,
+      sessionUrl, // Direct collaboration link
       expiresAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(), // 30 days
     });
   } catch (error) {

@@ -9,6 +9,7 @@ export interface ChatInterfaceProps {
   messages: Message[];
   isStreaming: boolean;
   onOpenSpec?: () => void;
+  onRequestSummary?: () => void;
 }
 
 export default function ChatInterface({
@@ -44,8 +45,27 @@ export default function ChatInterface({
   };
 
   const handleMagicLink = async () => {
-    // TODO: Implement magic link generation in future task
-    alert('Magic link generation will be implemented in a future task');
+    try {
+      const response = await fetch(`/api/sessions/${sessionId}/magic-link`, {
+        method: 'POST',
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        const link = data.sessionUrl; // Use the simple collaboration link
+
+        // Copy to clipboard
+        await navigator.clipboard.writeText(link);
+
+        // Show success message
+        alert(`Link copied to clipboard!\n\nShare this link to collaborate:\n${link}\n\nAnyone with this link can view and continue this specification.`);
+      } else {
+        alert('Failed to generate share link. Please try again.');
+      }
+    } catch (error) {
+      console.error('Error generating magic link:', error);
+      alert('Failed to generate share link. Please try again.');
+    }
   };
 
   const handleContactUs = () => {
@@ -84,6 +104,29 @@ export default function ChatInterface({
                 />
               </svg>
               <span className="hidden sm:inline">View Spec</span>
+            </button>
+          )}
+          {onRequestSummary && (
+            <button
+              onClick={onRequestSummary}
+              className="px-3 py-1.5 text-sm text-[var(--color-muted-foreground)] hover:text-[var(--color-primary)] transition-colors rounded-[var(--radius-md)] hover:bg-[var(--color-surface-elevated)] flex items-center gap-2"
+              title="Get progress summary and next steps"
+              disabled={isStreaming}
+            >
+              <svg
+                className="w-5 h-5"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"
+                />
+              </svg>
+              <span className="hidden sm:inline">Progress</span>
             </button>
           )}
           <button

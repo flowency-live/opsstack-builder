@@ -67,6 +67,12 @@ function ChatPageContent() {
     initializeSession();
   }, [sessionIdFromUrl]);
 
+  const handleRequestSummary = () => {
+    handleMessageSent(
+      "Can you provide a summary of what we've covered so far in my specification, highlight any important topics we haven't discussed yet, and suggest next steps?"
+    );
+  };
+
   const handleMessageSent = async (content: string) => {
     if (!sessionId) return;
 
@@ -183,6 +189,7 @@ function ChatPageContent() {
         messages={messages}
         isStreaming={isStreaming}
         onOpenSpec={() => setIsPreviewOpen(true)}
+        onRequestSummary={handleRequestSummary}
       />
 
       {specification && (
