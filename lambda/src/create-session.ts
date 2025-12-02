@@ -4,7 +4,7 @@
  */
 
 import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
-import { SessionManager } from './lib/session-manager';
+import { SessionManager } from './lib/services/session-manager';
 
 const sessionManager = new SessionManager();
 

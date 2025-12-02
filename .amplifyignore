@@ -1,0 +1,10 @@
+# Amplify ignore file
+# Exclude Lambda infrastructure from Amplify builds
+
+lambda/
+infrastructure/
+__tests__/
+*.test.ts
+*.test.tsx
+jest.config.js
+jest.setup.ts

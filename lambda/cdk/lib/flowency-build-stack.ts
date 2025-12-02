@@ -76,17 +76,6 @@ export class FlowencyBuildStack extends cdk.Stack {
       role: lambdaRole,
     });
 
-    const handleMessageLambda = new lambda.Function(this, 'HandleMessage', {
-      functionName: 'flowency-build-handle-message',
-      runtime: lambda.Runtime.NODEJS_20_X,
-      handler: 'handle-message.handler',
-      code: lambda.Code.fromAsset(path.join(__dirname, '../../dist')),
-      timeout: cdk.Duration.seconds(30), // Longer for AI processing
-      memorySize: 512,
-      environment: lambdaEnvironment,
-      role: lambdaRole,
-    });
-
     const generateMagicLinkLambda = new lambda.Function(this, 'GenerateMagicLink', {
       functionName: 'flowency-build-generate-magic-link',
       runtime: lambda.Runtime.NODEJS_20_X,
@@ -115,9 +104,6 @@ export class FlowencyBuildStack extends cdk.Stack {
 
     const session = sessions.addResource('{id}');
     session.addMethod('GET', new apigateway.LambdaIntegration(getSessionLambda));
-
-    const messages = session.addResource('messages');
-    messages.addMethod('POST', new apigateway.LambdaIntegration(handleMessageLambda));
 
     const magicLink = session.addResource('magic-link');
     magicLink.addMethod('POST', new apigateway.LambdaIntegration(generateMagicLinkLambda));

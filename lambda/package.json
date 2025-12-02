@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "Lambda functions for Flowency Build",
   "scripts": {
-    "build": "tsc && cp -r ../spec-wizard/lib ./dist/",
+    "build": "cp -r ../lib ./src/ && rm -f ./src/lib/db/postgres.ts ./src/lib/services/session-manager-postgres.ts && tsc",
     "watch": "tsc -w",
     "cdk": "cdk",
     "deploy": "npm run build && cd cdk && cdk deploy --require-approval never",

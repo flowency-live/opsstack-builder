@@ -1,0 +1,36 @@
+{
+  "version": "48.0.0",
+  "files": {
+    "0887c087224f4e6ca6a2406eb3d2cfc88bd19bb92d919e68b93e8b1b03f676a7": {
+      "displayName": "CreateSession/Code",
+      "source": {
+        "path": "asset.0887c087224f4e6ca6a2406eb3d2cfc88bd19bb92d919e68b93e8b1b03f676a7",
+        "packaging": "zip"
+      },
+      "destinations": {
+        "771551874768-eu-west-2-0a9faf89": {
+          "bucketName": "cdk-hnb659fds-assets-771551874768-eu-west-2",
+          "objectKey": "0887c087224f4e6ca6a2406eb3d2cfc88bd19bb92d919e68b93e8b1b03f676a7.zip",
+          "region": "eu-west-2",
+          "assumeRoleArn": "arn:${AWS::Partition}:iam::771551874768:role/cdk-hnb659fds-file-publishing-role-771551874768-eu-west-2"
+        }
+      }
+    },
+    "12ccf506218683d16eb971f7ab38ac480732a5c6f4e7e33311f629ff0712c95f": {
+      "displayName": "FlowencyBuildStack Template",
+      "source": {
+        "path": "FlowencyBuildStack.template.json",
+        "packaging": "file"
+      },
+      "destinations": {
+        "771551874768-eu-west-2-b21d52a9": {
+          "bucketName": "cdk-hnb659fds-assets-771551874768-eu-west-2",
+          "objectKey": "12ccf506218683d16eb971f7ab38ac480732a5c6f4e7e33311f629ff0712c95f.json",
+          "region": "eu-west-2",
+          "assumeRoleArn": "arn:${AWS::Partition}:iam::771551874768:role/cdk-hnb659fds-file-publishing-role-771551874768-eu-west-2"
+        }
+      }
+    }
+  },
+  "dockerImages": {}
+}

@@ -1,0 +1,1002 @@
+{
+ "Description": "Flowency Build - Specification Wizard Infrastructure",
+ "Resources": {
+  "SessionsTable7C302024": {
+   "Type": "AWS::DynamoDB::Table",
+   "Properties": {
+    "AttributeDefinitions": [
+     {
+      "AttributeName": "PK",
+      "AttributeType": "S"
+     },
+     {
+      "AttributeName": "SK",
+      "AttributeType": "S"
+     },
+     {
+      "AttributeName": "GSI1PK",
+      "AttributeType": "S"
+     },
+     {
+      "AttributeName": "GSI1SK",
+      "AttributeType": "S"
+     }
+    ],
+    "BillingMode": "PAY_PER_REQUEST",
+    "GlobalSecondaryIndexes": [
+     {
+      "IndexName": "GSI1",
+      "KeySchema": [
+       {
+        "AttributeName": "GSI1PK",
+        "KeyType": "HASH"
+       },
+       {
+        "AttributeName": "GSI1SK",
+        "KeyType": "RANGE"
+       }
+      ],
+      "Projection": {
+       "ProjectionType": "ALL"
+      }
+     }
+    ],
+    "KeySchema": [
+     {
+      "AttributeName": "PK",
+      "KeyType": "HASH"
+     },
+     {
+      "AttributeName": "SK",
+      "KeyType": "RANGE"
+     }
+    ],
+    "PointInTimeRecoverySpecification": {
+     "PointInTimeRecoveryEnabled": true
+    },
+    "SSESpecification": {
+     "SSEEnabled": true
+    },
+    "TableName": "flowency-build-sessions"
+   },
+   "UpdateReplacePolicy": "Retain",
+   "DeletionPolicy": "Retain",
+   "Metadata": {
+    "aws:cdk:path": "FlowencyBuildStack/SessionsTable/Resource"
+   }
+  },
+  "LambdaExecutionRoleD5C26073": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "lambda.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "ManagedPolicyArns": [
+     {
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+       ]
+      ]
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "FlowencyBuildStack/LambdaExecutionRole/Resource"
+   }
+  },
+  "LambdaExecutionRoleDefaultPolicy6D69732F": {
+   "Type": "AWS::IAM::Policy",
+   "Properties": {
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": [
+        "dynamodb:BatchGetItem",
+        "dynamodb:BatchWriteItem",
+        "dynamodb:ConditionCheckItem",
+        "dynamodb:DeleteItem",
+        "dynamodb:DescribeTable",
+        "dynamodb:GetItem",
+        "dynamodb:GetRecords",
+        "dynamodb:GetShardIterator",
+        "dynamodb:PutItem",
+        "dynamodb:Query",
+        "dynamodb:Scan",
+        "dynamodb:UpdateItem"
+       ],
+       "Effect": "Allow",
+       "Resource": [
+        {
+         "Fn::GetAtt": [
+          "SessionsTable7C302024",
+          "Arn"
+         ]
+        },
+        {
+         "Fn::Join": [
+          "",
+          [
+           {
+            "Fn::GetAtt": [
+             "SessionsTable7C302024",
+             "Arn"
+            ]
+           },
+           "/index/*"
+          ]
+         ]
+        }
+       ]
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "PolicyName": "LambdaExecutionRoleDefaultPolicy6D69732F",
+    "Roles": [
+     {
+      "Ref": "LambdaExecutionRoleD5C26073"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "FlowencyBuildStack/LambdaExecutionRole/DefaultPolicy/Resource"
+   }
+  },
+  "CreateSessionDFFDD4EA": {
+   "Type": "AWS::Lambda::Function",
+   "Properties": {
+    "Code": {
+     "S3Bucket": "cdk-hnb659fds-assets-771551874768-eu-west-2",
+     "S3Key": "0887c087224f4e6ca6a2406eb3d2cfc88bd19bb92d919e68b93e8b1b03f676a7.zip"
+    },
+    "Environment": {
+     "Variables": {
+      "DYNAMODB_TABLE_NAME": {
+       "Ref": "SessionsTable7C302024"
+      },
+      "REGION": "eu-west-2",
+      "OPENAI_API_KEY": "",
+      "ANTHROPIC_API_KEY": "",
+      "APP_URL": "https://my.flowency.build"
+     }
+    },
+    "FunctionName": "flowency-build-create-session",
+    "Handler": "create-session.handler",
+    "MemorySize": 256,
+    "Role": {
+     "Fn::GetAtt": [
+      "LambdaExecutionRoleD5C26073",
+      "Arn"
+     ]
+    },
+    "Runtime": "nodejs20.x",
+    "Timeout": 10
+   },
+   "DependsOn": [
+    "LambdaExecutionRoleDefaultPolicy6D69732F",
+    "LambdaExecutionRoleD5C26073"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "FlowencyBuildStack/CreateSession/Resource",
+    "aws:asset:path": "asset.0887c087224f4e6ca6a2406eb3d2cfc88bd19bb92d919e68b93e8b1b03f676a7",
+    "aws:asset:is-bundled": false,
+    "aws:asset:property": "Code"
+   }
+  },
+  "GetSession29617921": {
+   "Type": "AWS::Lambda::Function",
+   "Properties": {
+    "Code": {
+     "S3Bucket": "cdk-hnb659fds-assets-771551874768-eu-west-2",
+     "S3Key": "0887c087224f4e6ca6a2406eb3d2cfc88bd19bb92d919e68b93e8b1b03f676a7.zip"
+    },
+    "Environment": {
+     "Variables": {
+      "DYNAMODB_TABLE_NAME": {
+       "Ref": "SessionsTable7C302024"
+      },
+      "REGION": "eu-west-2",
+      "OPENAI_API_KEY": "",
+      "ANTHROPIC_API_KEY": "",
+      "APP_URL": "https://my.flowency.build"
+     }
+    },
+    "FunctionName": "flowency-build-get-session",
+    "Handler": "get-session.handler",
+    "MemorySize": 256,
+    "Role": {
+     "Fn::GetAtt": [
+      "LambdaExecutionRoleD5C26073",
+      "Arn"
+     ]
+    },
+    "Runtime": "nodejs20.x",
+    "Timeout": 10
+   },
+   "DependsOn": [
+    "LambdaExecutionRoleDefaultPolicy6D69732F",
+    "LambdaExecutionRoleD5C26073"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "FlowencyBuildStack/GetSession/Resource",
+    "aws:asset:path": "asset.0887c087224f4e6ca6a2406eb3d2cfc88bd19bb92d919e68b93e8b1b03f676a7",
+    "aws:asset:is-bundled": false,
+    "aws:asset:property": "Code"
+   }
+  },
+  "GenerateMagicLink2B0341DA": {
+   "Type": "AWS::Lambda::Function",
+   "Properties": {
+    "Code": {
+     "S3Bucket": "cdk-hnb659fds-assets-771551874768-eu-west-2",
+     "S3Key": "0887c087224f4e6ca6a2406eb3d2cfc88bd19bb92d919e68b93e8b1b03f676a7.zip"
+    },
+    "Environment": {
+     "Variables": {
+      "DYNAMODB_TABLE_NAME": {
+       "Ref": "SessionsTable7C302024"
+      },
+      "REGION": "eu-west-2",
+      "OPENAI_API_KEY": "",
+      "ANTHROPIC_API_KEY": "",
+      "APP_URL": "https://my.flowency.build"
+     }
+    },
+    "FunctionName": "flowency-build-generate-magic-link",
+    "Handler": "generate-magic-link.handler",
+    "MemorySize": 256,
+    "Role": {
+     "Fn::GetAtt": [
+      "LambdaExecutionRoleD5C26073",
+      "Arn"
+     ]
+    },
+    "Runtime": "nodejs20.x",
+    "Timeout": 10
+   },
+   "DependsOn": [
+    "LambdaExecutionRoleDefaultPolicy6D69732F",
+    "LambdaExecutionRoleD5C26073"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "FlowencyBuildStack/GenerateMagicLink/Resource",
+    "aws:asset:path": "asset.0887c087224f4e6ca6a2406eb3d2cfc88bd19bb92d919e68b93e8b1b03f676a7",
+    "aws:asset:is-bundled": false,
+    "aws:asset:property": "Code"
+   }
+  },
+  "FlowencyBuildAPIA782582C": {
+   "Type": "AWS::ApiGateway::RestApi",
+   "Properties": {
+    "Description": "API for Flowency Build specification wizard",
+    "Name": "Flowency Build API"
+   },
+   "Metadata": {
+    "aws:cdk:path": "FlowencyBuildStack/FlowencyBuildAPI/Resource"
+   }
+  },
+  "FlowencyBuildAPICloudWatchRoleB4E4557D": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "apigateway.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "ManagedPolicyArns": [
+     {
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":iam::aws:policy/service-role/AmazonAPIGatewayPushToCloudWatchLogs"
+       ]
+      ]
+     }
+    ]
+   },
+   "UpdateReplacePolicy": "Retain",
+   "DeletionPolicy": "Retain",
+   "Metadata": {
+    "aws:cdk:path": "FlowencyBuildStack/FlowencyBuildAPI/CloudWatchRole/Resource"
+   }
+  },
+  "FlowencyBuildAPIAccountF64AC636": {
+   "Type": "AWS::ApiGateway::Account",
+   "Properties": {
+    "CloudWatchRoleArn": {
+     "Fn::GetAtt": [
+      "FlowencyBuildAPICloudWatchRoleB4E4557D",
+      "Arn"
+     ]
+    }
+   },
+   "DependsOn": [
+    "FlowencyBuildAPIA782582C"
+   ],
+   "UpdateReplacePolicy": "Retain",
+   "DeletionPolicy": "Retain",
+   "Metadata": {
+    "aws:cdk:path": "FlowencyBuildStack/FlowencyBuildAPI/Account"
+   }
+  },
+  "FlowencyBuildAPIDeployment947A398416eb091758b4d34c913ba78e600ebf73": {
+   "Type": "AWS::ApiGateway::Deployment",
+   "Properties": {
+    "Description": "API for Flowency Build specification wizard",
+    "RestApiId": {
+     "Ref": "FlowencyBuildAPIA782582C"
+    }
+   },
+   "DependsOn": [
+    "FlowencyBuildAPIOPTIONS308A3F52",
+    "FlowencyBuildAPIsessionsidGET2426DF22",
+    "FlowencyBuildAPIsessionsidmagiclinkOPTIONS172CC265",
+    "FlowencyBuildAPIsessionsidmagiclinkPOSTD8797B29",
+    "FlowencyBuildAPIsessionsidmagiclinkB02E6EC1",
+    "FlowencyBuildAPIsessionsidOPTIONSF5ED399D",
+    "FlowencyBuildAPIsessionsidFE277F1C",
+    "FlowencyBuildAPIsessionsOPTIONS92BFC51A",
+    "FlowencyBuildAPIsessionsPOST27782E12",
+    "FlowencyBuildAPIsessionsC6788138"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "FlowencyBuildStack/FlowencyBuildAPI/Deployment/Resource",
+    "aws:cdk:do-not-refactor": true
+   }
+  },
+  "FlowencyBuildAPIDeploymentStageprodD6D34AC1": {
+   "Type": "AWS::ApiGateway::Stage",
+   "Properties": {
+    "DeploymentId": {
+     "Ref": "FlowencyBuildAPIDeployment947A398416eb091758b4d34c913ba78e600ebf73"
+    },
+    "RestApiId": {
+     "Ref": "FlowencyBuildAPIA782582C"
+    },
+    "StageName": "prod"
+   },
+   "DependsOn": [
+    "FlowencyBuildAPIAccountF64AC636"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "FlowencyBuildStack/FlowencyBuildAPI/DeploymentStage.prod/Resource"
+   }
+  },
+  "FlowencyBuildAPIOPTIONS308A3F52": {
+   "Type": "AWS::ApiGateway::Method",
+   "Properties": {
+    "ApiKeyRequired": false,
+    "AuthorizationType": "NONE",
+    "HttpMethod": "OPTIONS",
+    "Integration": {
+     "IntegrationResponses": [
+      {
+       "ResponseParameters": {
+        "method.response.header.Access-Control-Allow-Headers": "'Content-Type,Authorization'",
+        "method.response.header.Access-Control-Allow-Origin": "'*'",
+        "method.response.header.Access-Control-Allow-Methods": "'OPTIONS,GET,PUT,POST,DELETE,PATCH,HEAD'"
+       },
+       "StatusCode": "204"
+      }
+     ],
+     "RequestTemplates": {
+      "application/json": "{ statusCode: 200 }"
+     },
+     "Type": "MOCK"
+    },
+    "MethodResponses": [
+     {
+      "ResponseParameters": {
+       "method.response.header.Access-Control-Allow-Headers": true,
+       "method.response.header.Access-Control-Allow-Origin": true,
+       "method.response.header.Access-Control-Allow-Methods": true
+      },
+      "StatusCode": "204"
+     }
+    ],
+    "ResourceId": {
+     "Fn::GetAtt": [
+      "FlowencyBuildAPIA782582C",
+      "RootResourceId"
+     ]
+    },
+    "RestApiId": {
+     "Ref": "FlowencyBuildAPIA782582C"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "FlowencyBuildStack/FlowencyBuildAPI/Default/OPTIONS/Resource"
+   }
+  },
+  "FlowencyBuildAPIsessionsC6788138": {
+   "Type": "AWS::ApiGateway::Resource",
+   "Properties": {
+    "ParentId": {
+     "Fn::GetAtt": [
+      "FlowencyBuildAPIA782582C",
+      "RootResourceId"
+     ]
+    },
+    "PathPart": "sessions",
+    "RestApiId": {
+     "Ref": "FlowencyBuildAPIA782582C"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "FlowencyBuildStack/FlowencyBuildAPI/Default/sessions/Resource"
+   }
+  },
+  "FlowencyBuildAPIsessionsOPTIONS92BFC51A": {
+   "Type": "AWS::ApiGateway::Method",
+   "Properties": {
+    "ApiKeyRequired": false,
+    "AuthorizationType": "NONE",
+    "HttpMethod": "OPTIONS",
+    "Integration": {
+     "IntegrationResponses": [
+      {
+       "ResponseParameters": {
+        "method.response.header.Access-Control-Allow-Headers": "'Content-Type,Authorization'",
+        "method.response.header.Access-Control-Allow-Origin": "'*'",
+        "method.response.header.Access-Control-Allow-Methods": "'OPTIONS,GET,PUT,POST,DELETE,PATCH,HEAD'"
+       },
+       "StatusCode": "204"
+      }
+     ],
+     "RequestTemplates": {
+      "application/json": "{ statusCode: 200 }"
+     },
+     "Type": "MOCK"
+    },
+    "MethodResponses": [
+     {
+      "ResponseParameters": {
+       "method.response.header.Access-Control-Allow-Headers": true,
+       "method.response.header.Access-Control-Allow-Origin": true,
+       "method.response.header.Access-Control-Allow-Methods": true
+      },
+      "StatusCode": "204"
+     }
+    ],
+    "ResourceId": {
+     "Ref": "FlowencyBuildAPIsessionsC6788138"
+    },
+    "RestApiId": {
+     "Ref": "FlowencyBuildAPIA782582C"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "FlowencyBuildStack/FlowencyBuildAPI/Default/sessions/OPTIONS/Resource"
+   }
+  },
+  "FlowencyBuildAPIsessionsPOSTApiPermissionFlowencyBuildStackFlowencyBuildAPI42B1EC64POSTsessionsC9198880": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::GetAtt": [
+      "CreateSessionDFFDD4EA",
+      "Arn"
+     ]
+    },
+    "Principal": "apigateway.amazonaws.com",
+    "SourceArn": {
+     "Fn::Join": [
+      "",
+      [
+       "arn:aws:execute-api:eu-west-2:771551874768:",
+       {
+        "Ref": "FlowencyBuildAPIA782582C"
+       },
+       "/",
+       {
+        "Ref": "FlowencyBuildAPIDeploymentStageprodD6D34AC1"
+       },
+       "/POST/sessions"
+      ]
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "FlowencyBuildStack/FlowencyBuildAPI/Default/sessions/POST/ApiPermission.FlowencyBuildStackFlowencyBuildAPI42B1EC64.POST..sessions"
+   }
+  },
+  "FlowencyBuildAPIsessionsPOSTApiPermissionTestFlowencyBuildStackFlowencyBuildAPI42B1EC64POSTsessionsDA61C21C": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::GetAtt": [
+      "CreateSessionDFFDD4EA",
+      "Arn"
+     ]
+    },
+    "Principal": "apigateway.amazonaws.com",
+    "SourceArn": {
+     "Fn::Join": [
+      "",
+      [
+       "arn:aws:execute-api:eu-west-2:771551874768:",
+       {
+        "Ref": "FlowencyBuildAPIA782582C"
+       },
+       "/test-invoke-stage/POST/sessions"
+      ]
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "FlowencyBuildStack/FlowencyBuildAPI/Default/sessions/POST/ApiPermission.Test.FlowencyBuildStackFlowencyBuildAPI42B1EC64.POST..sessions"
+   }
+  },
+  "FlowencyBuildAPIsessionsPOST27782E12": {
+   "Type": "AWS::ApiGateway::Method",
+   "Properties": {
+    "AuthorizationType": "NONE",
+    "HttpMethod": "POST",
+    "Integration": {
+     "IntegrationHttpMethod": "POST",
+     "Type": "AWS_PROXY",
+     "Uri": {
+      "Fn::Join": [
+       "",
+       [
+        "arn:aws:apigateway:eu-west-2:lambda:path/2015-03-31/functions/",
+        {
+         "Fn::GetAtt": [
+          "CreateSessionDFFDD4EA",
+          "Arn"
+         ]
+        },
+        "/invocations"
+       ]
+      ]
+     }
+    },
+    "ResourceId": {
+     "Ref": "FlowencyBuildAPIsessionsC6788138"
+    },
+    "RestApiId": {
+     "Ref": "FlowencyBuildAPIA782582C"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "FlowencyBuildStack/FlowencyBuildAPI/Default/sessions/POST/Resource"
+   }
+  },
+  "FlowencyBuildAPIsessionsidFE277F1C": {
+   "Type": "AWS::ApiGateway::Resource",
+   "Properties": {
+    "ParentId": {
+     "Ref": "FlowencyBuildAPIsessionsC6788138"
+    },
+    "PathPart": "{id}",
+    "RestApiId": {
+     "Ref": "FlowencyBuildAPIA782582C"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "FlowencyBuildStack/FlowencyBuildAPI/Default/sessions/{id}/Resource"
+   }
+  },
+  "FlowencyBuildAPIsessionsidOPTIONSF5ED399D": {
+   "Type": "AWS::ApiGateway::Method",
+   "Properties": {
+    "ApiKeyRequired": false,
+    "AuthorizationType": "NONE",
+    "HttpMethod": "OPTIONS",
+    "Integration": {
+     "IntegrationResponses": [
+      {
+       "ResponseParameters": {
+        "method.response.header.Access-Control-Allow-Headers": "'Content-Type,Authorization'",
+        "method.response.header.Access-Control-Allow-Origin": "'*'",
+        "method.response.header.Access-Control-Allow-Methods": "'OPTIONS,GET,PUT,POST,DELETE,PATCH,HEAD'"
+       },
+       "StatusCode": "204"
+      }
+     ],
+     "RequestTemplates": {
+      "application/json": "{ statusCode: 200 }"
+     },
+     "Type": "MOCK"
+    },
+    "MethodResponses": [
+     {
+      "ResponseParameters": {
+       "method.response.header.Access-Control-Allow-Headers": true,
+       "method.response.header.Access-Control-Allow-Origin": true,
+       "method.response.header.Access-Control-Allow-Methods": true
+      },
+      "StatusCode": "204"
+     }
+    ],
+    "ResourceId": {
+     "Ref": "FlowencyBuildAPIsessionsidFE277F1C"
+    },
+    "RestApiId": {
+     "Ref": "FlowencyBuildAPIA782582C"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "FlowencyBuildStack/FlowencyBuildAPI/Default/sessions/{id}/OPTIONS/Resource"
+   }
+  },
+  "FlowencyBuildAPIsessionsidGETApiPermissionFlowencyBuildStackFlowencyBuildAPI42B1EC64GETsessionsid26B78095": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::GetAtt": [
+      "GetSession29617921",
+      "Arn"
+     ]
+    },
+    "Principal": "apigateway.amazonaws.com",
+    "SourceArn": {
+     "Fn::Join": [
+      "",
+      [
+       "arn:aws:execute-api:eu-west-2:771551874768:",
+       {
+        "Ref": "FlowencyBuildAPIA782582C"
+       },
+       "/",
+       {
+        "Ref": "FlowencyBuildAPIDeploymentStageprodD6D34AC1"
+       },
+       "/GET/sessions/*"
+      ]
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "FlowencyBuildStack/FlowencyBuildAPI/Default/sessions/{id}/GET/ApiPermission.FlowencyBuildStackFlowencyBuildAPI42B1EC64.GET..sessions.{id}"
+   }
+  },
+  "FlowencyBuildAPIsessionsidGETApiPermissionTestFlowencyBuildStackFlowencyBuildAPI42B1EC64GETsessionsidE53C28FA": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::GetAtt": [
+      "GetSession29617921",
+      "Arn"
+     ]
+    },
+    "Principal": "apigateway.amazonaws.com",
+    "SourceArn": {
+     "Fn::Join": [
+      "",
+      [
+       "arn:aws:execute-api:eu-west-2:771551874768:",
+       {
+        "Ref": "FlowencyBuildAPIA782582C"
+       },
+       "/test-invoke-stage/GET/sessions/*"
+      ]
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "FlowencyBuildStack/FlowencyBuildAPI/Default/sessions/{id}/GET/ApiPermission.Test.FlowencyBuildStackFlowencyBuildAPI42B1EC64.GET..sessions.{id}"
+   }
+  },
+  "FlowencyBuildAPIsessionsidGET2426DF22": {
+   "Type": "AWS::ApiGateway::Method",
+   "Properties": {
+    "AuthorizationType": "NONE",
+    "HttpMethod": "GET",
+    "Integration": {
+     "IntegrationHttpMethod": "POST",
+     "Type": "AWS_PROXY",
+     "Uri": {
+      "Fn::Join": [
+       "",
+       [
+        "arn:aws:apigateway:eu-west-2:lambda:path/2015-03-31/functions/",
+        {
+         "Fn::GetAtt": [
+          "GetSession29617921",
+          "Arn"
+         ]
+        },
+        "/invocations"
+       ]
+      ]
+     }
+    },
+    "ResourceId": {
+     "Ref": "FlowencyBuildAPIsessionsidFE277F1C"
+    },
+    "RestApiId": {
+     "Ref": "FlowencyBuildAPIA782582C"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "FlowencyBuildStack/FlowencyBuildAPI/Default/sessions/{id}/GET/Resource"
+   }
+  },
+  "FlowencyBuildAPIsessionsidmagiclinkB02E6EC1": {
+   "Type": "AWS::ApiGateway::Resource",
+   "Properties": {
+    "ParentId": {
+     "Ref": "FlowencyBuildAPIsessionsidFE277F1C"
+    },
+    "PathPart": "magic-link",
+    "RestApiId": {
+     "Ref": "FlowencyBuildAPIA782582C"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "FlowencyBuildStack/FlowencyBuildAPI/Default/sessions/{id}/magic-link/Resource"
+   }
+  },
+  "FlowencyBuildAPIsessionsidmagiclinkOPTIONS172CC265": {
+   "Type": "AWS::ApiGateway::Method",
+   "Properties": {
+    "ApiKeyRequired": false,
+    "AuthorizationType": "NONE",
+    "HttpMethod": "OPTIONS",
+    "Integration": {
+     "IntegrationResponses": [
+      {
+       "ResponseParameters": {
+        "method.response.header.Access-Control-Allow-Headers": "'Content-Type,Authorization'",
+        "method.response.header.Access-Control-Allow-Origin": "'*'",
+        "method.response.header.Access-Control-Allow-Methods": "'OPTIONS,GET,PUT,POST,DELETE,PATCH,HEAD'"
+       },
+       "StatusCode": "204"
+      }
+     ],
+     "RequestTemplates": {
+      "application/json": "{ statusCode: 200 }"
+     },
+     "Type": "MOCK"
+    },
+    "MethodResponses": [
+     {
+      "ResponseParameters": {
+       "method.response.header.Access-Control-Allow-Headers": true,
+       "method.response.header.Access-Control-Allow-Origin": true,
+       "method.response.header.Access-Control-Allow-Methods": true
+      },
+      "StatusCode": "204"
+     }
+    ],
+    "ResourceId": {
+     "Ref": "FlowencyBuildAPIsessionsidmagiclinkB02E6EC1"
+    },
+    "RestApiId": {
+     "Ref": "FlowencyBuildAPIA782582C"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "FlowencyBuildStack/FlowencyBuildAPI/Default/sessions/{id}/magic-link/OPTIONS/Resource"
+   }
+  },
+  "FlowencyBuildAPIsessionsidmagiclinkPOSTApiPermissionFlowencyBuildStackFlowencyBuildAPI42B1EC64POSTsessionsidmagiclinkDAD601F5": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::GetAtt": [
+      "GenerateMagicLink2B0341DA",
+      "Arn"
+     ]
+    },
+    "Principal": "apigateway.amazonaws.com",
+    "SourceArn": {
+     "Fn::Join": [
+      "",
+      [
+       "arn:aws:execute-api:eu-west-2:771551874768:",
+       {
+        "Ref": "FlowencyBuildAPIA782582C"
+       },
+       "/",
+       {
+        "Ref": "FlowencyBuildAPIDeploymentStageprodD6D34AC1"
+       },
+       "/POST/sessions/*/magic-link"
+      ]
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "FlowencyBuildStack/FlowencyBuildAPI/Default/sessions/{id}/magic-link/POST/ApiPermission.FlowencyBuildStackFlowencyBuildAPI42B1EC64.POST..sessions.{id}.magic-link"
+   }
+  },
+  "FlowencyBuildAPIsessionsidmagiclinkPOSTApiPermissionTestFlowencyBuildStackFlowencyBuildAPI42B1EC64POSTsessionsidmagiclinkAF27FCDA": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::GetAtt": [
+      "GenerateMagicLink2B0341DA",
+      "Arn"
+     ]
+    },
+    "Principal": "apigateway.amazonaws.com",
+    "SourceArn": {
+     "Fn::Join": [
+      "",
+      [
+       "arn:aws:execute-api:eu-west-2:771551874768:",
+       {
+        "Ref": "FlowencyBuildAPIA782582C"
+       },
+       "/test-invoke-stage/POST/sessions/*/magic-link"
+      ]
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "FlowencyBuildStack/FlowencyBuildAPI/Default/sessions/{id}/magic-link/POST/ApiPermission.Test.FlowencyBuildStackFlowencyBuildAPI42B1EC64.POST..sessions.{id}.magic-link"
+   }
+  },
+  "FlowencyBuildAPIsessionsidmagiclinkPOSTD8797B29": {
+   "Type": "AWS::ApiGateway::Method",
+   "Properties": {
+    "AuthorizationType": "NONE",
+    "HttpMethod": "POST",
+    "Integration": {
+     "IntegrationHttpMethod": "POST",
+     "Type": "AWS_PROXY",
+     "Uri": {
+      "Fn::Join": [
+       "",
+       [
+        "arn:aws:apigateway:eu-west-2:lambda:path/2015-03-31/functions/",
+        {
+         "Fn::GetAtt": [
+          "GenerateMagicLink2B0341DA",
+          "Arn"
+         ]
+        },
+        "/invocations"
+       ]
+      ]
+     }
+    },
+    "ResourceId": {
+     "Ref": "FlowencyBuildAPIsessionsidmagiclinkB02E6EC1"
+    },
+    "RestApiId": {
+     "Ref": "FlowencyBuildAPIA782582C"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "FlowencyBuildStack/FlowencyBuildAPI/Default/sessions/{id}/magic-link/POST/Resource"
+   }
+  },
+  "CDKMetadata": {
+   "Type": "AWS::CDK::Metadata",
+   "Properties": {
+    "Analytics": "v2:deflate64:H4sIAAAAAAAA/02OQW+DMAyFf0vvwWtBmnalm3abVtHdKxM8lkIShJ0hhPjvU0Kn9vQ+v2f5OYe8OMB+hxNnuumy3tSwnAV1p3Diy9LMDq1vali+sO5JvX67BKsyaGGp/OYlPfne6DmOG62qR1s3CMt7cFqMdzF75BON1jAb71bFxQWZSRjKKIoLOAbdkRyRSeFgWhSacIalIpZyMKn3jqXWPjhRbzT0frbkJLoP01mwTc9uUBH7MGpK5z9IfnwTwxv9p7eSxOt6t9OP8ZBxbdz5DDIEWZXzDcGVn34PL5Dv4Xl3ZWOyMTgxlqDa9A9PJ/EmdQEAAA=="
+   },
+   "Metadata": {
+    "aws:cdk:path": "FlowencyBuildStack/CDKMetadata/Default"
+   }
+  }
+ },
+ "Outputs": {
+  "FlowencyBuildAPIEndpoint37718BC4": {
+   "Value": {
+    "Fn::Join": [
+     "",
+     [
+      "https://",
+      {
+       "Ref": "FlowencyBuildAPIA782582C"
+      },
+      ".execute-api.eu-west-2.",
+      {
+       "Ref": "AWS::URLSuffix"
+      },
+      "/",
+      {
+       "Ref": "FlowencyBuildAPIDeploymentStageprodD6D34AC1"
+      },
+      "/"
+     ]
+    ]
+   }
+  },
+  "ApiUrl": {
+   "Description": "API Gateway URL",
+   "Value": {
+    "Fn::Join": [
+     "",
+     [
+      "https://",
+      {
+       "Ref": "FlowencyBuildAPIA782582C"
+      },
+      ".execute-api.eu-west-2.",
+      {
+       "Ref": "AWS::URLSuffix"
+      },
+      "/",
+      {
+       "Ref": "FlowencyBuildAPIDeploymentStageprodD6D34AC1"
+      },
+      "/"
+     ]
+    ]
+   },
+   "Export": {
+    "Name": "FlowencyBuildApiUrl"
+   }
+  },
+  "TableName": {
+   "Description": "DynamoDB Table Name",
+   "Value": {
+    "Ref": "SessionsTable7C302024"
+   },
+   "Export": {
+    "Name": "FlowencyBuildTableName"
+   }
+  }
+ },
+ "Parameters": {
+  "BootstrapVersion": {
+   "Type": "AWS::SSM::Parameter::Value<String>",
+   "Default": "/cdk-bootstrap/hnb659fds/version",
+   "Description": "Version of the CDK Bootstrap resources in this environment, automatically retrieved from SSM Parameter Store. [cdk:skip]"
+  }
+ },
+ "Rules": {
+  "CheckBootstrapVersion": {
+   "Assertions": [
+    {
+     "Assert": {
+      "Fn::Not": [
+       {
+        "Fn::Contains": [
+         [
+          "1",
+          "2",
+          "3",
+          "4",
+          "5"
+         ],
+         {
+          "Ref": "BootstrapVersion"
+         }
+        ]
+       }
+      ]
+     },
+     "AssertDescription": "CDK bootstrap stack version 6 required. Please run 'cdk bootstrap' with a recent version of the CDK CLI."
+    }
+   ]
+  }
+ }
+}
