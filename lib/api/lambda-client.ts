@@ -3,12 +3,6 @@
  * Helper for Next.js API routes to call Lambda functions via API Gateway
  */
 
-const API_GATEWAY_URL = process.env.API_GATEWAY_URL || '';
-
-if (!API_GATEWAY_URL && process.env.NODE_ENV === 'production') {
-  console.warn('API_GATEWAY_URL not set! Lambda calls will fail.');
-}
-
 export interface LambdaResponse<T = any> {
   success: boolean;
   data?: T;
@@ -20,6 +14,9 @@ async function callLambda<T = any>(
   options: RequestInit = {}
 ): Promise<LambdaResponse<T>> {
   try {
+    // Read environment variable at runtime, not at module load time
+    const API_GATEWAY_URL = process.env.API_GATEWAY_URL || '';
+
     if (!API_GATEWAY_URL) {
       console.error('API_GATEWAY_URL is not configured');
       return {
