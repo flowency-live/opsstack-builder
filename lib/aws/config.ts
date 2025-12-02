@@ -14,6 +14,7 @@ const baseConfig: any = {
 };
 
 // Add credentials if provided (Amplify SSR requires explicit credentials)
+// These credentials allow Next.js API routes to access DynamoDB directly
 if (process.env.FBUILDER_AWS_ACCESS_KEY_ID && process.env.FBUILDER_AWS_SECRET_ACCESS_KEY) {
   baseConfig.credentials = {
     accessKeyId: process.env.FBUILDER_AWS_ACCESS_KEY_ID,
