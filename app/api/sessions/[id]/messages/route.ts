@@ -136,74 +136,15 @@ export async function POST(
 
           console.log(`[SPEC] User message count: ${userMessageCount}, Should update: ${shouldUpdateSpec}`);
 
-          let updatedSpecification = session.state.specification;
-          let specUpdated = false;
-
-          if (shouldUpdateSpec) {
-            const isFirstRun = session.state.specification.version === 0;
-
-            console.log(`[SPEC] Calling PRD engine (isFirstRun: ${isFirstRun})`);
-
-            try {
-              const prdResult = await prdEngine.synthesize({
-                mode: 'update',
-                currentSpec: session.state.specification,
-                lastMessages: isFirstRun
-                  ? finalHistory
-                  : finalHistory.slice(-3),
-                isFirstRun
-              });
-
-              // PRD engine returns FULL spec - overwrite completely
-              updatedSpecification = {
-                ...prdResult.spec,
-                id: session.state.specification.id,
-                version: session.state.specification.version + 1,
-                lastUpdated: new Date()
-              };
-
-              // Calculate readyForHandoff in TypeScript (deterministic)
-              const missingSections = prdResult.missingSections;
-              const readyForHandoff =
-                updatedSpecification.plainEnglishSummary.overview.length > 50 &&
-                updatedSpecification.plainEnglishSummary.targetUsers.length > 20 &&
-                updatedSpecification.plainEnglishSummary.keyFeatures.length >= 5 &&
-                missingSections.length === 0;
-
-              // Persist completeness in SessionState
-              session.state.specification = updatedSpecification;
-              session.state.completeness = {
-                missingSections,
-                readyForHandoff,
-                lastEvaluated: new Date(),
-              };
-
-              // Debug logging
-              console.log('[PRD] Updated', {
-                sessionId,
-                version: updatedSpecification.version,
-                featuresCount: updatedSpecification.plainEnglishSummary.keyFeatures.length,
-                overview: updatedSpecification.plainEnglishSummary.overview.substring(0, 100),
-                missingSections,
-                readyForHandoff,
-              });
-
-              specUpdated = true;
-            } catch (error) {
-              console.error('[PRD] Failed to update spec:', error);
-              // Keep existing spec on failure
-            }
-          }
-
-          // Update progress
+          // Update progress (fast, synchronous calculation)
           const updatedProgress = await progressTracker.updateProgress(
-            updatedSpecification
+            session.state.specification
           );
 
-          // Save session state (aggressive persistence)
+          // Save conversation state immediately (no spec update yet)
           const updatedState: SessionState = {
             conversationHistory: finalHistory,
-            specification: updatedSpecification,
+            specification: session.state.specification,
             progress: updatedProgress,
             userInfo: session.state.userInfo,
             lockedSections: session.state.lockedSections,
@@ -212,11 +153,11 @@ export async function POST(
 
           await sessionManager.saveSessionState(sessionId, updatedState);
 
-          // Send completion event with specification data
+          // Send completion event with current specification
           const completionData = {
             messageId: assistantMessage.id,
-            specUpdated,
-            specification: updatedSpecification,
+            specUpdated: false, // Will update async if needed
+            specification: session.state.specification,
             completeness: session.state.completeness,
             progress: updatedProgress,
             latency: Date.now() - startTime,
@@ -226,6 +167,77 @@ export async function POST(
             encoder.encode(`data: ${JSON.stringify({ type: 'complete', data: completionData })}\n\n`)
           );
           controller.close();
+
+          // Run PRD Engine asynchronously in background (non-blocking)
+          if (shouldUpdateSpec) {
+            const isFirstRun = session.state.specification.version === 0;
+
+            console.log(`[SPEC] Triggering async PRD engine update (isFirstRun: ${isFirstRun})`);
+
+            // Fire and forget - runs after response is sent
+            (async () => {
+              try {
+                const prdResult = await prdEngine.synthesize({
+                  mode: 'update',
+                  currentSpec: session.state.specification,
+                  lastMessages: isFirstRun
+                    ? finalHistory
+                    : finalHistory.slice(-3),
+                  isFirstRun
+                });
+
+                // PRD engine returns FULL spec - overwrite completely
+                const updatedSpecification = {
+                  ...prdResult.spec,
+                  id: session.state.specification.id,
+                  version: session.state.specification.version + 1,
+                  lastUpdated: new Date()
+                };
+
+                // Calculate readyForHandoff in TypeScript (deterministic)
+                const missingSections = prdResult.missingSections;
+                const readyForHandoff =
+                  updatedSpecification.plainEnglishSummary.overview.length > 50 &&
+                  updatedSpecification.plainEnglishSummary.targetUsers.length > 20 &&
+                  updatedSpecification.plainEnglishSummary.keyFeatures.length >= 5 &&
+                  missingSections.length === 0;
+
+                const updatedCompleteness = {
+                  missingSections,
+                  readyForHandoff,
+                  lastEvaluated: new Date(),
+                };
+
+                // Update progress with new spec
+                const finalProgress = await progressTracker.updateProgress(updatedSpecification);
+
+                // Save updated spec to session
+                const finalState: SessionState = {
+                  conversationHistory: finalHistory,
+                  specification: updatedSpecification,
+                  progress: finalProgress,
+                  userInfo: session.state.userInfo,
+                  lockedSections: session.state.lockedSections,
+                  completeness: updatedCompleteness,
+                };
+
+                await sessionManager.saveSessionState(sessionId, finalState);
+
+                // Debug logging
+                console.log('[PRD] Async update complete', {
+                  sessionId,
+                  version: updatedSpecification.version,
+                  featuresCount: updatedSpecification.plainEnglishSummary.keyFeatures.length,
+                  overview: updatedSpecification.plainEnglishSummary.overview.substring(0, 100),
+                  missingSections,
+                  readyForHandoff,
+                });
+              } catch (error) {
+                console.error('[PRD] Async update failed:', error);
+                // Session still has conversation saved, just no spec update
+              }
+            })();
+          }
         } catch (error) {
           console.error('Streaming error:', error);
           
