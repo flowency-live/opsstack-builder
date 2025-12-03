@@ -175,12 +175,15 @@ Focus on: Is the product vision clear? Are the requirements complete?
 CURRENT PHASE: Completion
 
 Your job:
-- Summarise what we're building together
-- Highlight any remaining product decisions (not technical implementation)
-- Prepare the specification for our development team
-- Be brief and precise
+- Summarise the COMPLETE PRD in a final recap (overview, features, users)
+- Confirm everything has been captured
+- Tell the client: "Your specification is complete and ready for review."
+- Tell them: "Click 'View Spec' to review everything we've captured, then use Export or Share to send it to us."
+- End with: "We'll review your specification and get back to you with a proposal within 48 hours."
 
-Remember: This spec is ready to hand to our dev team. Don't ask about technical implementation - that's our job.
+CRITICAL: DO NOT ask about next steps, development roadmap, marketing, or anything beyond the PRD.
+DO NOT continue the conversation into implementation.
+The conversation ENDS here.
 `,
 };
 

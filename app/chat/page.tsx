@@ -168,7 +168,21 @@ function ChatPageContent() {
 
                 // Handle completion event with specification data
                 if (data.type === 'complete' && data.data) {
+                  console.log('[CLIENT] Spec update received:', {
+                    specUpdated: data.data.specUpdated,
+                    hasSpecification: !!data.data.specification,
+                    version: data.data.specification?.version,
+                    messageCount: messages.length + 1
+                  });
+
                   if (data.data.specification) {
+                    console.log('[CLIENT] Specification data:', {
+                      overview: data.data.specification.plainEnglishSummary.overview.substring(0, 100) + '...',
+                      featuresCount: data.data.specification.plainEnglishSummary.keyFeatures.length,
+                      targetUsers: data.data.specification.plainEnglishSummary.targetUsers,
+                      requirementsCount: data.data.specification.formalPRD.requirements.length
+                    });
+
                     setSpecification(data.data.specification);
                     if (data.data.specUpdated) {
                       setRecentlyUpdatedSections(['overview', 'features']);
