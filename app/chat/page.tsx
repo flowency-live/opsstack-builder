@@ -5,6 +5,7 @@ import { useSearchParams } from 'next/navigation';
 import ChatInterface from '@/components/ChatInterface';
 import { SpecPreviewPanel } from '@/components/SpecPreviewPanel';
 import { ExportModal } from '@/components/ExportModal';
+import { ShareModal } from '@/components/ShareModal';
 import { Message, Specification } from '@/lib/models/types';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -23,6 +24,8 @@ function ChatPageContent() {
   const [isStreaming, setIsStreaming] = useState(false);
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
   const [isExportModalOpen, setIsExportModalOpen] = useState(false);
+  const [isShareModalOpen, setIsShareModalOpen] = useState(false);
+  const [shareUrl, setShareUrl] = useState<string>('');
   const [viewMode, setViewMode] = useState<'simple' | 'detailed'>('simple');
   const [recentlyUpdatedSections, setRecentlyUpdatedSections] = useState<string[]>([]);
 
@@ -93,8 +96,8 @@ function ChatPageContent() {
       if (response.ok) {
         const data = await response.json();
         const link = data.sessionUrl;
-        await navigator.clipboard.writeText(link);
-        alert(`Link copied to clipboard!\n\nShare this link:\n${link}\n\nAnyone with this link can view and continue this specification.`);
+        setShareUrl(link);
+        setIsShareModalOpen(true);
       } else {
         alert('Failed to generate share link. Please try again.');
       }
@@ -286,12 +289,21 @@ function ChatPageContent() {
       )}
 
       {specification && (
-        <ExportModal
-          isOpen={isExportModalOpen}
-          onClose={() => setIsExportModalOpen(false)}
-          sessionId={sessionId}
-          specification={specification}
-        />
+        <>
+          <ExportModal
+            isOpen={isExportModalOpen}
+            onClose={() => setIsExportModalOpen(false)}
+            sessionId={sessionId}
+            specification={specification}
+          />
+
+          <ShareModal
+            isOpen={isShareModalOpen}
+            onClose={() => setIsShareModalOpen(false)}
+            shareUrl={shareUrl}
+            specTitle={specification.plainEnglishSummary.overview.substring(0, 50) || 'My Specification'}
+          />
+        </>
       )}
 
       {completeness?.readyForHandoff && (
