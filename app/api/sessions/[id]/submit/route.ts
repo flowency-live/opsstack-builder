@@ -74,7 +74,6 @@ Return as JSON array: ["feature 1", "feature 2", ...]
 
 Keep suggestions practical and aligned with the product vision.`
       }],
-      model: 'claude-3-5-haiku-20241022',
       temperature: 0.7,
       maxTokens: 500,
     });

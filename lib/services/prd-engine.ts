@@ -64,7 +64,6 @@ export class PRDEngine {
     try {
       const response = await this.llmRouter.complete({
         messages: [{ role: 'user', content: prompt }],
-        model: 'claude-3-5-haiku-20241022',
         temperature: 0.3,
         maxTokens: 4000,
       });

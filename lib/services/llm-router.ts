@@ -322,11 +322,41 @@ export class LLMRouter {
     await this.checkRateLimit();
 
     const provider = this.anthropicClient ? 'anthropic' : 'openai';
+    const temperature = options.temperature ?? 0.7;
+    const maxTokens = options.maxTokens ?? 1000;
+
+    try {
+      return await this.completeWithProvider(provider, options, temperature, maxTokens);
+    } catch (error) {
+      console.error(`[PRD ENGINE] Error with ${provider} provider:`, error);
+
+      // Attempt fallback to alternative provider
+      const fallbackProvider = provider === 'openai' ? 'anthropic' : 'openai';
+
+      if (this.isProviderAvailable(fallbackProvider)) {
+        console.log(`[PRD ENGINE] Falling back to ${fallbackProvider} provider`);
+        return await this.completeWithProvider(fallbackProvider, options, temperature, maxTokens);
+      }
+
+      throw error;
+    }
+  }
+
+  /**
+   * Complete request with specific provider
+   */
+  private async completeWithProvider(
+    provider: 'openai' | 'anthropic',
+    options: {
+      messages: Array<{ role: string; content: string }>;
+      model?: string;
+    },
+    temperature: number,
+    maxTokens: number
+  ): Promise<{ content: string }> {
     const model = options.model || (provider === 'anthropic'
       ? this.config.anthropic.defaultModel
       : this.config.openai.defaultModel);
-    const temperature = options.temperature ?? 0.7;
-    const maxTokens = options.maxTokens ?? 1000;
 
     if (provider === 'anthropic' && this.anthropicClient) {
       const response = await this.anthropicClient.messages.create({
