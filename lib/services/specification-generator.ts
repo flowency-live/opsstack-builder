@@ -133,7 +133,8 @@ Guidelines:
       } catch (parseError) {
         console.error(`[SPEC GEN] JSON parse FAILED:`, parseError);
         console.error(`[SPEC GEN] Raw response:`, response.content);
-        throw new Error(`Failed to parse LLM response as JSON: ${parseError.message}`);
+        const errorMessage = parseError instanceof Error ? parseError.message : String(parseError);
+        throw new Error(`Failed to parse LLM response as JSON: ${errorMessage}`);
       }
 
       // Build the specification object
