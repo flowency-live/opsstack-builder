@@ -82,7 +82,8 @@ export async function POST(
       sessionId,
       updatedHistory,
       session.state.specification,
-      session.state.lockedSections
+      session.state.lockedSections,
+      session.state.completeness
     );
 
     // Process message and get streaming response
@@ -162,17 +163,29 @@ export async function POST(
           if (shouldUpdateSpec) {
             const isFirstRun = session.state.specification.version === 0;
 
-            console.log(`[SPEC] Triggering async PRD engine update (isFirstRun: ${isFirstRun})`);
+            // Detect large initial spec dump (first message with extensive content)
+            const firstUserMessage = finalHistory.find(m => m.role === 'user');
+            const isLargeInitialDump = isFirstRun &&
+              firstUserMessage &&
+              firstUserMessage.content.length > 500 &&
+              /feature|requirement|user|flow|spec|product/i.test(firstUserMessage.content);
+
+            console.log(`[SPEC] Triggering async PRD engine update (isFirstRun: ${isFirstRun}, isLargeInitialDump: ${isLargeInitialDump})`);
 
             // Fire and forget - runs after response is sent
             (async () => {
               try {
+                // Smart message selection for PRD engine:
+                // - First run OR large dump: pass ALL history to capture everything
+                // - Subsequent runs: pass last 6 messages (3 exchanges) for better context
+                const messagesToPass = (isFirstRun || isLargeInitialDump)
+                  ? finalHistory
+                  : finalHistory.slice(-6);
+
                 const prdResult = await prdEngine.synthesize({
                   mode: 'update',
                   currentSpec: session.state.specification,
-                  lastMessages: isFirstRun
-                    ? finalHistory
-                    : finalHistory.slice(-3),
+                  lastMessages: messagesToPass,
                   isFirstRun
                 });
 

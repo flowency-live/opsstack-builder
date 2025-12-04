@@ -17,7 +17,11 @@ export interface ConversationContext {
     content: string;
   }>;
   currentSpecification?: any;
-  progressState?: any;
+  completeness?: {
+    missingSections: string[];
+    readyForHandoff: boolean;
+    lastEvaluated: string;
+  };
   projectType?: string;
   userIntent?: Record<string, any>;
   lockedSections?: Array<{

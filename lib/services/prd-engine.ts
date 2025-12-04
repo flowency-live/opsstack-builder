@@ -116,22 +116,55 @@ ${specSummaryText}
 NEW MESSAGES:
 ${messagesText}
 
-RULES:
-1. Return COMPLETE Specification object (not partial patches)
-2. Only change sections affected by new messages
-3. Copy unchanged sections through as-is
-4. Add to lists (features, requirements) - don't replace entire lists
-5. List any missing core sections from: overview, targetUsers, keyFeatures, flows
+════════════════════════════════════════════════════════════════════════════════
+CRITICAL RULES - INCREMENTAL UPDATE MODE:
+════════════════════════════════════════════════════════════════════════════════
 
-CRITICAL - HANDLING USER CORRECTIONS:
-- If user says "change X to Y" or "not X, Y" or "lets make it Y instead", REPLACE the field with Y
-- If user says "lets not limit it to dads, make it all parents" → UPDATE targetUsers to "Parents" (not "Dads")
-- If user says "actually, make it for teachers" → UPDATE targetUsers to "Teachers"
-- If user says "change the name to..." → UPDATE overview
-- Pay attention to explicit corrections and changes, not just additions
-- When user corrects themselves, the new information REPLACES the old, not adds to it
+1. PRESERVE ALL EXISTING CONTENT
+   - The CURRENT SPEC SUMMARY above contains information captured from ALL previous conversations
+   - You MUST preserve every piece of existing information unless explicitly contradicted
+   - Return COMPLETE Specification object with ALL existing fields intact
 
-IMPORTANT:
+2. INCREMENTAL CHANGES ONLY
+   - Only ADD new information mentioned in NEW MESSAGES
+   - Only REFINE existing content if NEW MESSAGES provide clarifications
+   - Only REPLACE content if NEW MESSAGES explicitly correct or contradict it
+
+3. ARRAYS ARE ADDITIVE
+   - For arrays (keyFeatures, flows, rulesAndConstraints, etc.): ADD new items, don't replace
+   - Only remove items if user explicitly says to remove them
+   - Keep all existing array items and append new ones
+
+4. CORRECTIONS VS ADDITIONS
+   - Explicit corrections (user says "change X to Y", "not X, Y", "actually it's Y"):
+     → REPLACE the old value with new value
+   - Additions (user mentions new features, flows, constraints):
+     → ADD to existing arrays
+   - Clarifications (user provides more detail about existing items):
+     → ENHANCE the existing item with new details
+
+5. MISSING SECTIONS
+   - List any missing core sections from: overview, targetUsers, keyFeatures, flows
+   - Only mark as missing if genuinely empty or insufficient
+
+EXAMPLES OF CORRECT INCREMENTAL UPDATES:
+
+Example 1 - Addition:
+  Current: keyFeatures: ["User login", "Search"]
+  New message: "User: We also need notifications"
+  Result: keyFeatures: ["User login", "Search", "Push notifications"]
+
+Example 2 - Correction:
+  Current: targetUsers: "Dads with young children"
+  New message: "User: Actually, let's make it for all parents, not just dads"
+  Result: targetUsers: "Parents with young children"
+
+Example 3 - Refinement:
+  Current: overview: "A platform for finding activities"
+  New message: "User: It should focus on outdoor activities specifically"
+  Result: overview: "A platform for finding outdoor activities for families"
+
+WRITING QUALITY:
 - Write overview as a polished elevator pitch, not raw conversation text
 - Extract real features from the conversation, not placeholders
 - Be specific and concrete

@@ -5,7 +5,7 @@
 
 import { LLMRouter, StreamingResponse } from './llm-router';
 import { PromptManager, ConversationContext, ConversationStage } from './prompt-manager';
-import { Message, ProgressState, Specification, LockedSection } from '../models/types';
+import { Message, CompletenessState, Specification, LockedSection } from '../models/types';
 import { v4 as uuidv4 } from 'uuid';
 import { isEnglish, getNonEnglishMessage } from '../utils/language-detection';
 import { getRelevantExamples, formatExamplesForPrompt } from '../prompts/jason-examples';
@@ -106,7 +106,8 @@ export class ConversationEngine {
     // Add spec context to inform chat of captured information
     const withSpecContext = this.enhancePromptWithSpecContext(
       systemPrompt,
-      context.currentSpecification
+      context.currentSpecification,
+      context.completeness
     );
 
     // Add instruction to avoid redundant questions
@@ -146,7 +147,8 @@ export class ConversationEngine {
     sessionId: string,
     conversationHistory: Message[],
     specification?: Specification,
-    lockedSections?: LockedSection[]
+    lockedSections?: LockedSection[],
+    completeness?: CompletenessState
   ): Promise<ConversationContext> {
     // Extract project type from conversation history or specification
     const projectType = this.extractProjectType(conversationHistory, specification);
@@ -169,6 +171,7 @@ export class ConversationEngine {
         content: msg.content,
       })),
       currentSpecification: specification,
+      completeness,
       projectType,
       userIntent,
       lockedSections,
@@ -176,63 +179,65 @@ export class ConversationEngine {
   }
 
   /**
-   * Generate follow-up questions based on conversation history and progress
+   * Generate follow-up questions based on conversation history and missing sections
+   * v0.3: Driven by missingSections rather than topic tracking
    */
   async generateFollowUpQuestions(
     context: ConversationContext,
-    progress: ProgressState
+    completeness?: CompletenessState
   ): Promise<string[]> {
-    // Identify topics that need coverage
-    const uncoveredTopics = progress.topics.filter(
-      (topic) => topic.status === 'not-started' && topic.required
-    );
+    const missingSections = completeness?.missingSections ?? [];
 
-    if (uncoveredTopics.length === 0) {
+    if (missingSections.length === 0) {
       return ['Is there anything else you\'d like to add or clarify?'];
     }
 
-    // Get the next topic to cover
-    const nextTopic = uncoveredTopics[0];
+    // Get the next missing section
+    const nextSection = missingSections[0];
 
-    // Generate contextual question for this topic
+    // Generate contextual question for this section
     const question = await this.generateContextualQuestion(
-      nextTopic.name,
+      nextSection,
       context
     );
 
     // Check for redundancy
     if (this.isQuestionRedundant(context.sessionId, question, context)) {
-      // Try next topic
-      if (uncoveredTopics.length > 1) {
-        const alternativeTopic = uncoveredTopics[1];
-        return [await this.generateContextualQuestion(alternativeTopic.name, context)];
+      // Try next section
+      if (missingSections.length > 1) {
+        const alternativeSection = missingSections[1];
+        return [await this.generateContextualQuestion(alternativeSection, context)];
       }
       return ['Is there anything else you\'d like to add or clarify?'];
     }
 
     // Track this question
-    this.trackAskedQuestion(context.sessionId, nextTopic.name);
+    this.trackAskedQuestion(context.sessionId, nextSection);
 
     return [question];
   }
 
   /**
    * Determine the current conversation stage
+   * v0.3: Simplified stage determination based on spec state and message count
    */
   private determineConversationStage(context: ConversationContext): ConversationStage {
     const messageCount = context.conversationHistory.length;
-    const completeness = context.progressState?.overallCompleteness || 0;
+    const missingSections = context.completeness?.missingSections ?? [];
+    const readyForHandoff = context.completeness?.readyForHandoff ?? false;
 
-    // CRITICAL: Never complete before 20 messages (safeguard against premature completion)
+    // CRITICAL: Never complete before minimum message threshold
     const MIN_MESSAGES_FOR_COMPLETION = 20;
 
     if (messageCount === 0) {
       return 'initial';
-    } else if (completeness < 30) {
+    } else if (!context.currentSpecification || context.currentSpecification.version === 0) {
       return 'discovery';
-    } else if (completeness < 70) {
+    } else if (missingSections.length > 3) {
+      return 'discovery';
+    } else if (missingSections.length > 0) {
       return 'refinement';
-    } else if (completeness < 95 || messageCount < MIN_MESSAGES_FOR_COMPLETION) {
+    } else if (!readyForHandoff || messageCount < MIN_MESSAGES_FOR_COMPLETION) {
       return 'validation';
     } else {
       return 'completion';
@@ -291,34 +296,57 @@ LANGUAGE GUIDELINES:
 
   /**
    * Enhance prompt with current specification context
-   * Informs the AI of what has already been captured
+   * Informs the AI of what has already been captured and what's missing
    */
-  private enhancePromptWithSpecContext(prompt: string, specification?: Specification): string {
-    if (!specification || specification.version === 0) {
+  private enhancePromptWithSpecContext(
+    prompt: string,
+    specification?: Specification,
+    completeness?: CompletenessState
+  ): string {
+    // If no spec exists yet, return prompt unchanged
+    if (!specification) {
       return prompt;
     }
 
     const overview = specification.plainEnglishSummary?.overview ?? '';
     const targetUsers = specification.plainEnglishSummary?.targetUsers ?? '';
     const keyFeatures = specification.plainEnglishSummary?.keyFeatures ?? [];
+    const flows = specification.plainEnglishSummary?.flows ?? [];
+    const missingSections = completeness?.missingSections ?? [];
 
-    if (!overview && !targetUsers && keyFeatures.length === 0) {
-      return prompt;
-    }
-
-    return `${prompt}
+    // Build spec context string
+    let specContext = `
 
 CURRENT SPECIFICATION STATE:
 Overview: ${overview || 'Not yet defined'}
 Target Users: ${targetUsers || 'Not yet defined'}
-Features Captured: ${keyFeatures.length} features
-Key Features: ${keyFeatures.slice(0, 5).join(', ')}
+Features Captured: ${keyFeatures.length} features`;
+
+    if (keyFeatures.length > 0) {
+      specContext += `\nKey Features: ${keyFeatures.slice(0, 5).join(', ')}`;
+    }
+
+    if (flows.length > 0) {
+      specContext += `\nUser Flows: ${flows.length} flows captured`;
+    }
+
+    // Add missing sections - CRITICAL for gap-driven conversation
+    if (missingSections.length > 0) {
+      specContext += `
+
+MISSING SECTIONS (focus your questions here):
+${missingSections.map(section => `- ${section}`).join('\n')}`;
+    }
+
+    specContext += `
 
 INSTRUCTIONS:
 - Reference what we already know from the spec
-- Ask about gaps only
+- Focus questions on MISSING SECTIONS above
 - Don't repeat questions about captured information
 - Build on existing knowledge`;
+
+    return `${prompt}${specContext}`;
   }
 
   /**
@@ -605,11 +633,11 @@ INSTRUCTIONS:
   createCheckpoint(
     sectionName: string,
     specification?: Specification,
-    progress?: ProgressState
+    completeness?: CompletenessState
   ): LockedSection | null {
     if (!specification) return null;
 
-    const summary = this.generateCheckpointSummary(sectionName, specification, progress);
+    const summary = this.generateCheckpointSummary(sectionName, specification, completeness);
     if (!summary) return null;
 
     return {
@@ -625,7 +653,7 @@ INSTRUCTIONS:
   private generateCheckpointSummary(
     sectionName: string,
     specification: Specification,
-    progress?: ProgressState
+    completeness?: CompletenessState
   ): string | null {
     const spec = specification.plainEnglishSummary;
 
