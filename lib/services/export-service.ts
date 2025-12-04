@@ -6,7 +6,8 @@
  */
 
 import { v4 as uuidv4 } from 'uuid';
-import puppeteer from 'puppeteer';
+import puppeteer from 'puppeteer-core';
+import chromium from '@sparticuz/chromium';
 import { PutObjectCommand, GetObjectCommand } from '@aws-sdk/client-s3';
 import { SendEmailCommand } from '@aws-sdk/client-ses';
 import { s3Client, sesClient, bucketNames } from '../aws';
@@ -55,10 +56,12 @@ export class ExportService {
     // Generate HTML content for PDF
     const htmlContent = this.generatePDFHTML(specification, sessionId);
 
-    // Launch headless browser
+    // Launch headless browser with serverless-compatible Chromium
     const browser = await puppeteer.launch({
-      headless: true,
-      args: ['--no-sandbox', '--disable-setuid-sandbox'],
+      args: chromium.args,
+      defaultViewport: chromium.defaultViewport,
+      executablePath: await chromium.executablePath(),
+      headless: chromium.headless,
     });
 
     try {
