@@ -1,4 +1,4 @@
-# Flowency Builder
+# KAVOStack Builder
 
 **Conversational AI assistant that transforms product ideas into build-ready specifications.**
 
