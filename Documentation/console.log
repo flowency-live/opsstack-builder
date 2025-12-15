@@ -1,0 +1,40 @@
+index.iife.js:1 content script loaded
+refresh.js:27 WebSocket connection to 'ws://localhost:8081/' failed: 
+initClient @ refresh.js:27
+c0711dc76f610163.js:12 [CLIENT] Spec update received: Object
+c0711dc76f610163.js:12 [CLIENT] Applying spec update (version: 0 )
+c0711dc76f610163.js:12 [CLIENT] Specification data: Object
+c0711dc76f610163.js:12 [CLIENT] Spec update received: Object
+c0711dc76f610163.js:12 [CLIENT] Ignoring stale spec update (version: 0 vs current: 0 )
+c0711dc76f610163.js:12 [CLIENT] Spec update received: Object
+c0711dc76f610163.js:12 [CLIENT] Ignoring stale spec update (version: 0 vs current: 0 )
+c0711dc76f610163.js:12 [CLIENT] Spec update received: Object
+c0711dc76f610163.js:12 [CLIENT] Ignoring stale spec update (version: 0 vs current: 0 )
+c0711dc76f610163.js:12 [CLIENT] Spec update received: {specUpdated: false, hasSpecification: true, version: 1, messageCount: 10}
+c0711dc76f610163.js:12 [CLIENT] Applying spec update (version: 1 )
+c0711dc76f610163.js:12 [CLIENT] Specification data: {overview: 'Dorset Transfer Company is a digital-first transpo…ervice in the Dorset region, providing reliabl...', featuresCount: 6, targetUsers: 'Public retail customers, local businesses, company administrators, and drivers.', requirementsCount: 3}
+c0711dc76f610163.js:12 [CLIENT] Spec update received: {specUpdated: false, hasSpecification: true, version: 1, messageCount: 12}
+c0711dc76f610163.js:12 [CLIENT] Ignoring stale spec update (version: 1 vs current: 1 )
+c0711dc76f610163.js:12 [CLIENT] Spec update received: {specUpdated: false, hasSpecification: true, version: 1, messageCount: 14}
+c0711dc76f610163.js:12 [CLIENT] Ignoring stale spec update (version: 1 vs current: 1 )
+c0711dc76f610163.js:12 [CLIENT] Spec update received: {specUpdated: false, hasSpecification: true, version: 1, messageCount: 16}
+c0711dc76f610163.js:12 [CLIENT] Ignoring stale spec update (version: 1 vs current: 1 )
+c0711dc76f610163.js:12 [CLIENT] Spec update received: {specUpdated: false, hasSpecification: true, version: 1, messageCount: 18}
+c0711dc76f610163.js:12 [CLIENT] Ignoring stale spec update (version: 1 vs current: 1 )
+c0711dc76f610163.js:12 [CLIENT] Spec update received: {specUpdated: false, hasSpecification: true, version: 2, messageCount: 20}
+c0711dc76f610163.js:12 [CLIENT] Applying spec update (version: 2 )
+c0711dc76f610163.js:12 [CLIENT] Specification data: {overview: 'Dorset Transfer Company is a digital-first transpo…ervice in the Dorset region, providing reliabl...', featuresCount: 8, targetUsers: 'Public retail customers, local businesses, company administrators, and drivers.', requirementsCount: 1}
+c0711dc76f610163.js:12 [CLIENT] Spec update received: {specUpdated: false, hasSpecification: true, version: 2, messageCount: 22}
+c0711dc76f610163.js:12 [CLIENT] Ignoring stale spec update (version: 2 vs current: 2 )
+c0711dc76f610163.js:1  GET https://www.my.flowency.build/api/export/pdf?sessionId=7feaceac-ecf4-437b-a997-bcdb5f3817a6 500 (Internal Server Error)
+g @ c0711dc76f610163.js:1
+sX @ aeca31833b607f97.js:1
+(anonymous) @ aeca31833b607f97.js:1
+tI @ aeca31833b607f97.js:1
+s3 @ aeca31833b607f97.js:1
+fC @ aeca31833b607f97.js:1
+fP @ aeca31833b607f97.js:1
+c0711dc76f610163.js:12 [CLIENT] Spec update received: {specUpdated: false, hasSpecification: true, version: 2, messageCount: 24}
+c0711dc76f610163.js:12 [CLIENT] Ignoring stale spec update (version: 2 vs current: 2 )
+c0711dc76f610163.js:12 [CLIENT] Spec update received: {specUpdated: false, hasSpecification: true, version: 2, messageCount: 26}
+c0711dc76f610163.js:12 [CLIENT] Ignoring stale spec update (version: 2 vs current: 2 )

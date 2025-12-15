@@ -44,3 +44,7 @@ next-env.d.ts
 # cdk
 lambda/cdk/cdk.out/
 lambda/dist/
+
+# AI tool configs (machine-specific)
+.claude/
+.kiro/
