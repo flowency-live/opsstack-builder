@@ -56,7 +56,7 @@ export default function PrivacyPolicy() {
               <ul className="list-disc list-inside space-y-2 ml-4">
                 <li>Generate and maintain your product specifications</li>
                 <li>Provide you with quotations and project proposals</li>
-                <li>Improve our AI-powered Flowency Build</li>
+                <li>Improve our AI-powered OpsStack Builder</li>
                 <li>Communicate with you about your project</li>
               </ul>
             </section>
@@ -152,8 +152,8 @@ export default function PrivacyPolicy() {
                 9. Contact Us
               </h2>
               <p>
-                For questions about this Privacy Policy or to exercise your data rights, please 
-                contact us through the FlowencyBuild website.
+                For questions about this Privacy Policy or to exercise your data rights, please
+                contact us through the OpsStack website.
               </p>
             </section>
           </div>

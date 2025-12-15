@@ -40,7 +40,7 @@ export default function TermsOfService() {
                 1. Acceptance of Terms
               </h2>
               <p>
-                By accessing and using the Flowency Build, you accept and agree to be bound 
+                By accessing and using OpsStack Builder, you accept and agree to be bound
                 by the terms and provision of this agreement.
               </p>
             </section>
@@ -79,8 +79,8 @@ export default function TermsOfService() {
                 3. Service Description
               </h2>
               <p>
-                The Flowency Build is an AI-powered tool designed to help you create 
-                product specifications. While we strive for accuracy, the generated specifications 
+                OpsStack Builder is an AI-powered tool designed to help you create
+                product specifications. While we strive for accuracy, the generated specifications
                 should be reviewed and validated before use in production environments.
               </p>
             </section>
@@ -151,8 +151,8 @@ export default function TermsOfService() {
                 9. Contact Information
               </h2>
               <p>
-                For questions about these Terms of Service, please contact us through the 
-                FlowencyBuild website.
+                For questions about these Terms of Service, please contact us through the
+                OpsStack website.
               </p>
             </section>
           </div>

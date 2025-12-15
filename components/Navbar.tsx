@@ -19,11 +19,11 @@ const Navbar = () => {
   }, []);
 
   const navLinks = [
-    { label: "Home", href: "https://flowency.build" },
-    { label: "Services", href: "https://flowency.build/services" },
-    { label: "Pricing", href: "https://flowency.build/pricing" },
-    { label: "About", href: "https://flowency.build/about" },
-    { label: "Contact", href: "https://flowency.build/contact" },
+    { label: "Home", href: "https://opsstack.co.uk" },
+    { label: "Services", href: "https://opsstack.co.uk/services" },
+    { label: "Pricing", href: "https://opsstack.co.uk/pricing" },
+    { label: "About", href: "https://opsstack.co.uk/about" },
+    { label: "Contact", href: "https://opsstack.co.uk/contact" },
     { label: "Spec Builder", href: "/chat" },
   ];
 
@@ -32,12 +32,12 @@ const Navbar = () => {
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex h-16 items-center justify-between">
           {/* Logo */}
-          <a href="https://flowency.build" className="flex items-center gap-2 group">
+          <a href="https://opsstack.co.uk" className="flex items-center gap-2 group">
             {/* Using a placeholder for logo - update path if logo exists */}
             <div className="w-8 h-8 rounded-lg bg-primary/20 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-              <span className="text-primary font-bold text-lg">F</span>
+              <span className="text-primary font-bold text-lg">OS</span>
             </div>
-            <span className="font-display font-semibold text-lg group-hover:text-primary transition-colors duration-300">Flowency Build</span>
+            <span className="font-display font-semibold text-lg group-hover:text-primary transition-colors duration-300">OpsStack Builder</span>
           </a>
 
           {/* Desktop Nav */}
@@ -65,7 +65,7 @@ const Navbar = () => {
 
           {/* CTA Button */}
           <div className="hidden md:block">
-            <a href="https://flowency.build/contact">
+            <a href="https://opsstack.co.uk/contact">
               <Button variant="hero" size="sm">
                 Book a Session
               </Button>
@@ -106,7 +106,7 @@ const Navbar = () => {
                   </Link>
                 )
               ))}
-              <a href="https://flowency.build/contact" onClick={() => setIsOpen(false)}>
+              <a href="https://opsstack.co.uk/contact" onClick={() => setIsOpen(false)}>
                 <Button variant="hero" size="sm" className="w-fit">
                   Book a Session
                 </Button>

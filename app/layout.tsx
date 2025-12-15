@@ -15,8 +15,16 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Flowency Build | Build Your Product Spec in Minutes",
-  description: "AI-powered Flowency Build that guides you through creating comprehensive product requirements for your software project. Fast, conversational, and secure.",
+  title: "OpsStack Builder | Build Your Product Spec in Minutes",
+  description: "AI-powered OpsStack Builder that guides you through creating comprehensive product requirements for your software project. Fast, conversational, and secure.",
+  icons: {
+    icon: [
+      { url: '/favicon.ico', sizes: 'any' },
+      { url: '/favicon-16x16.png', sizes: '16x16', type: 'image/png' },
+      { url: '/favicon-32x32.png', sizes: '32x32', type: 'image/png' },
+    ],
+    apple: '/apple-touch-icon.png',
+  },
 };
 
 export default function RootLayout({
