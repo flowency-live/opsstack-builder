@@ -11,8 +11,8 @@
         "dynamodb:Scan"
       ],
       "Resource": [
-        "arn:aws:dynamodb:eu-west-2:771551874768:table/flowency-build-sessions",
-        "arn:aws:dynamodb:eu-west-2:771551874768:table/flowency-build-sessions/index/*"
+        "arn:aws:dynamodb:eu-west-2:771551874768:table/opstack-builder-sessions-dev",
+        "arn:aws:dynamodb:eu-west-2:771551874768:table/opstack-builder-sessions-dev/index/*"
       ]
     }
   ]

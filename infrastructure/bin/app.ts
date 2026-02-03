@@ -22,12 +22,12 @@ const env = {
 };
 
 const environment = process.env.ENVIRONMENT || 'dev';
-const appName = process.env.APP_NAME || 'fbuilder';
+const appName = process.env.APP_NAME || 'opstack-builder';
 
 // Common tags for all resources
 const commonTags = {
-  Project: process.env.PROJECT || 'FlowencyBuilder',
-  Product: 'FlowencyBuilder',
+  Project: process.env.PROJECT || 'OpStackBuilder',
+  Product: 'OpStackBuilder',
   Environment: environment,
   Owner: process.env.OWNER || 'engineering-team',
   CostCenter: process.env.COST_CENTER || 'product-development',

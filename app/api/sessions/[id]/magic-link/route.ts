@@ -32,7 +32,7 @@ export async function POST(
     const token = await sessionManager.generateMagicLink(sessionId);
 
     // Construct full URLs
-    const baseUrl = process.env.APP_URL || process.env.NEXT_PUBLIC_BASE_URL || 'https://my.flowency.build';
+    const baseUrl = process.env.APP_URL || process.env.NEXT_PUBLIC_APP_URL || 'https://builder.opstack.uk';
 
     // Secure token-based URL (expires in 30 days)
     const tokenUrl = `${baseUrl}/restore?token=${token}`;

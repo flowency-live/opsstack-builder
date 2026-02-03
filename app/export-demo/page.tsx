@@ -259,7 +259,7 @@ export default function ExportDemoPage() {
                 Shareable Link
               </h3>
               <p className="text-gray-600 text-sm mb-4">
-                Generate a branded presentation page hosted on flowency.build
+                Generate a branded presentation page hosted on opstack.uk
               </p>
               <ul className="text-sm text-gray-600 space-y-1">
                 <li>✓ Beautiful presentation</li>

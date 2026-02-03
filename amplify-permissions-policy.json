@@ -15,9 +15,9 @@
         "dynamodb:DescribeTable"
       ],
       "Resource": [
-        "arn:aws:dynamodb:eu-west-2:771551874768:table/fbuilder-sessions-dev",
-        "arn:aws:dynamodb:eu-west-2:771551874768:table/fbuilder-sessions-dev/index/*",
-        "arn:aws:dynamodb:eu-west-2:771551874768:table/fbuilder-sessions-dev/stream/*"
+        "arn:aws:dynamodb:eu-west-2:771551874768:table/opstack-builder-sessions-dev",
+        "arn:aws:dynamodb:eu-west-2:771551874768:table/opstack-builder-sessions-dev/index/*",
+        "arn:aws:dynamodb:eu-west-2:771551874768:table/opstack-builder-sessions-dev/stream/*"
       ]
     },
     {
@@ -30,21 +30,8 @@
         "s3:PutObjectAcl"
       ],
       "Resource": [
-        "arn:aws:s3:::fbuilder-exports-dev-771551874768",
-        "arn:aws:s3:::fbuilder-exports-dev-771551874768/*"
-      ]
-    },
-    {
-      "Effect": "Allow",
-      "Action": [
-        "kms:Decrypt",
-        "kms:Encrypt",
-        "kms:GenerateDataKey",
-        "kms:DescribeKey"
-      ],
-      "Resource": [
-        "arn:aws:kms:eu-west-2:771551874768:key/81df3d8c-60d9-42b5-8fd9-faea80133f6c",
-        "arn:aws:kms:eu-west-2:771551874768:key/c56ce121-b584-47d8-8294-080e75f36330"
+        "arn:aws:s3:::opstack-builder-exports-dev-771551874768",
+        "arn:aws:s3:::opstack-builder-exports-dev-771551874768/*"
       ]
     }
   ]
