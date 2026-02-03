@@ -426,7 +426,7 @@ export class ExportService {
     const { recipient, specification, magicLink, pdfUrl, sessionId } = options;
 
     // Email configuration
-    const senderEmail = process.env.SES_SENDER_EMAIL || 'noreply@opsstack.co.uk';
+    const senderEmail = process.env.SES_SENDER_EMAIL || 'noreply@opstack.uk';
     const subject = 'Your Product Specification Document';
 
     // Email body
