@@ -15,11 +15,16 @@ const baseConfig: any = {
 
 // Add credentials if provided (Amplify SSR requires explicit credentials)
 // These credentials allow Next.js API routes to access DynamoDB directly
+console.log('[AWS Config] OPSTACK_AWS_ACCESS_KEY_ID present:', !!process.env.OPSTACK_AWS_ACCESS_KEY_ID);
+console.log('[AWS Config] OPSTACK_AWS_SECRET_ACCESS_KEY present:', !!process.env.OPSTACK_AWS_SECRET_ACCESS_KEY);
 if (process.env.OPSTACK_AWS_ACCESS_KEY_ID && process.env.OPSTACK_AWS_SECRET_ACCESS_KEY) {
+  console.log('[AWS Config] Setting explicit credentials');
   baseConfig.credentials = {
     accessKeyId: process.env.OPSTACK_AWS_ACCESS_KEY_ID,
     secretAccessKey: process.env.OPSTACK_AWS_SECRET_ACCESS_KEY,
   };
+} else {
+  console.log('[AWS Config] No explicit credentials found, will use default provider chain');
 }
 
 // Override for LocalStack local development
